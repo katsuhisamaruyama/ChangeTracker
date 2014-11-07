@@ -11,7 +11,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/commons-io-2.4.jar,
  .
-Export-Package: org.jtool.changerecorder.core.event,
+Export-Package: org.jtool.changerecorder.core,
+ org.jtool.changerecorder.core.event,
  org.jtool.changerecorder.core.history,
  org.jtool.changerecorder.core.operation,
  org.jtool.changerecorder.core.util
