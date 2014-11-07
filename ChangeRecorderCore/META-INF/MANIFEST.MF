@@ -15,4 +15,5 @@ Export-Package: org.jtool.changerecorder.core,
  org.jtool.changerecorder.core.event,
  org.jtool.changerecorder.core.history,
  org.jtool.changerecorder.core.operation,
- org.jtool.changerecorder.core.util
+ org.jtool.changerecorder.core.util,
+ org.jtool.changerecorder.diff
