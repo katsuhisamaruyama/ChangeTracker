@@ -24,7 +24,7 @@ public class Activator extends AbstractUIPlugin implements IStartup {
     /**
      * The plug-in ID
      */
-    public static final String PLUGIN_ID = "OperationRecorderJP";
+    public static final String PLUGIN_ID = "ChangeRecorder";
     
     /**
      * The plug-in instance
