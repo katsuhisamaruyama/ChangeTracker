@@ -13,17 +13,17 @@ package org.jtool.macrorecorder.macro;
 public class DocumentMacro extends Macro {
     
     /**
-     * The leftmost offset of the document changed by this macro
+     * The leftmost offset of the document changed by this macro.
      */
     private int start;
     
     /**
-     * The contents of the document inserted by this macro
+     * The contents of the document inserted by this macro.
      */
     private String insertedText;
     
     /**
-     * The contents of the document deleted by this macro
+     * The contents of the document deleted by this macro.
      */
     private String deletedText;
     

@@ -33,12 +33,12 @@ public class DocumentManager implements IDocumentListener, IDocumentUndoListener
     private DocMacroRecorder recorder;
     
     /**
-     * The contents of the document inserted by this macro
+     * The contents of the document inserted by this macro.
      */
     private String insertedText;
     
     /**
-     * The contents of the document deleted by this macro
+     * The contents of the document deleted by this macro.
      */
     private String deletedText;
     
@@ -50,7 +50,7 @@ public class DocumentManager implements IDocumentListener, IDocumentUndoListener
     }
     
     /**
-     * The object that indicates the kind of undo/redo macro
+     * The object that indicates the kind of undo/redo macro.
      */
     private UndoRedoKind kind;
     

@@ -13,12 +13,12 @@ package org.jtool.macrorecorder.macro;
 public class CopyMacro extends Macro {
     
     /**
-     * The leftmost offset of the document copied by this macro
+     * The leftmost offset of the document copied by this macro.
      */
     private int start;
     
     /**
-     * The contents of the document copied by this macro
+     * The contents of the document copied by this macro.
      */
     private String copiedText;
     

@@ -16,7 +16,7 @@ import java.util.List;
 public class CompoundMacro extends Macro {
     
     /**
-     * The collection of macros contained in this compound macro
+     * The collection of macros contained in this compound macro.
      */
     private List<Macro> macros = new ArrayList<Macro>();
     

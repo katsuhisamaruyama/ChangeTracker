@@ -15,27 +15,27 @@ import java.util.List;
 public class Macro {
     
     /**
-     * The time when this macro started
+     * The time when this macro started.
      */
     protected long startTime;
     
     /**
-     * The time when this macro ended
+     * The time when this macro ended.
      */
     protected long endTime;
     
     /**
-     * The type of this macro
+     * The type of this macro.
      */
     protected String type;
     
     /**
-     * The path of a file or a package this macro was performed
+     * The path of a file or a package this macro was performed.
      */
     private String path;
     
     /**
-     * The collection of raw macros that were recorded
+     * The collection of raw macros that were recorded.
      */
     private List<Macro> rawMacros;
     

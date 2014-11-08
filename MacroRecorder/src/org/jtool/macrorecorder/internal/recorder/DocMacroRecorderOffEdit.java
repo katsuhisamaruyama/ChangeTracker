@@ -22,12 +22,12 @@ import org.eclipse.jface.text.IDocument;
 public class DocMacroRecorderOffEdit extends DocMacroRecorder {
     
     /**
-     * A file related to recorded macros
+     * A file related to recorded macros.
      */
     private IFile file;
     
     /**
-     * The document of a file
+     * The document of a file.
      */
     private IDocument doc;
     

@@ -21,7 +21,7 @@ import java.util.ListIterator;
 public class DiffMacroGenerator {
     
     /**
-     * The cost of an empty edit operation in terms of edit characters
+     * The cost of an empty edit operation in terms of edit characters.
      */
     private static short editCost = 4;
     

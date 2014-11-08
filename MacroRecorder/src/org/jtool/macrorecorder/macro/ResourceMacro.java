@@ -13,17 +13,17 @@ package org.jtool.macrorecorder.macro;
 public class ResourceMacro extends Macro {
     
     /**
-     * The type of the resource changed by this macro
+     * The type of the resource changed by this macro.
      */
     private String target;
     
     /**
-     * The path of a resource identical to the resource changed by this macro
+     * The path of a resource identical to the resource changed by this macro.
      */
     private String ipath;
     
     /**
-     * The contents of source code after the resource change
+     * The contents of source code after the resource change.
      */
     private String code;
     

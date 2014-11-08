@@ -20,7 +20,7 @@ public class TriggerMacro extends Macro {
     }
     
     /**
-     * The kind of a trigger of the macro
+     * The kind of a trigger of the macro.
      */
     private Kind kind = null;
     

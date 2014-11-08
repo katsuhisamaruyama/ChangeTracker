@@ -25,22 +25,22 @@ import org.eclipse.jface.text.IDocument;
 public class DocMacroRecorderOnEdit extends DocMacroRecorder {
     
     /**
-     * An editor on which document macros are recorded
+     * An editor on which document macros are recorded.
      */
     private IEditorPart editor;
     
     /**
-     * The document of a file
+     * The document of a file.
      */
     private IDocument doc;
     
     /**
-     * A compressor that compresses macros
+     * A compressor that compresses macros.
      */
     private MacroCompressor compressor;
     
     /**
-     * The styled text of an editor
+     * The styled text of an editor.
      */
     private StyledText styledText;
     

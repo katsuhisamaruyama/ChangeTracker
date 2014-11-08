@@ -13,7 +13,7 @@ package org.jtool.macrorecorder.macro;
 public class ExecutionMacro extends Macro {
     
     /**
-     * The string representing the contents of this macro
+     * The string representing the contents of this macro.
      */
     private String commandId;
     

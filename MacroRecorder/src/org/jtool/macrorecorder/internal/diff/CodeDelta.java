@@ -20,17 +20,17 @@ public class CodeDelta {
     }
     
     /**
-     * The offset value of the text that contains this code delta
+     * The offset value of the text that contains this code delta.
      */
     private int offset;
     
     /**
-     * The type of this code delta
+     * The type of this code delta.
      */
     private Type type;
     
     /**
-     * The text of the code delta
+     * The text of the code delta.
      */
     private String text;
     

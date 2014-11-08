@@ -27,27 +27,27 @@ import java.util.List;
 public class MenuMacroRecorder {
     
     /**
-     * A recorder that sends all kinds of macro events
+     * A recorder that sends all kinds of macro events.
      */
     private Recorder recorder;
     
     /**
-     * The collection of raw macros that were recorded
+     * The collection of raw macros that were recorded.
      */
     private List<Macro> rawMacros = new ArrayList<Macro>();
     
     /**
-     * A compound macro that contains macros
+     * A compound macro that contains macros.
      */
     private CompoundMacro compoundMacro;
     
     /**
-     * A manger that manages command execution events
+     * A manger that manages command execution events.
      */
     private CommandExecutionManager commandManager;
     
     /**
-     * A manger that manages refactoring execution events
+     * A manger that manages refactoring execution events.
      */
     private RefactoringExecutionManager refactoringManager;
     

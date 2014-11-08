@@ -14,17 +14,23 @@ import org.jtool.macrorecorder.macro.Macro;
  */
 public class MacroEvent {
     
+    /**
+     * The value indicating general macros.
+     */
     public static int GENERIC_MACRO = 1;
     
+    /**
+     * The value indicating raw macros per keystroke.
+     */
     public static int RAW_MACRO = 2;
     
     /**
-     * A macro sent to listeners
+     * A macro sent to listeners.
      */
     private Macro macro;
     
     /**
-     * The type of a macro sent to listeners
+     * The type of a macro sent to listeners.
      */
     private int type;
     

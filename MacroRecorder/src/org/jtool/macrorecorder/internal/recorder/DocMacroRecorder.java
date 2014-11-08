@@ -26,12 +26,12 @@ import java.util.List;
 public class DocMacroRecorder {
     
     /**
-     * A manager that manages document events
+     * A manager that manages document events.
      */
     protected DocumentManager documentManager;
     
     /**
-     * The collection of raw macros that were recorded
+     * The collection of raw macros that were recorded.
      */
     protected List<Macro> rawMacros;
     
@@ -41,27 +41,27 @@ public class DocMacroRecorder {
     protected String path;
     
     /**
-     * A recorder factory that sends macro events
+     * A recorder factory that sends macro events.
      */
     protected Recorder recorder;
     
     /**
-     * A compound macro that contains macros
+     * A compound macro that contains macros.
      */
     protected CompoundMacro compoundMacro;
     
     /**
-     * The last raw macro
+     * The last raw macro.
      */
     protected Macro lastRawMacro;
     
     /**
-     * The last document macro stored for macro compression
+     * The last document macro stored for macro compression.
      */
     protected DocumentMacro lastDocumentMacro;
     
     /**
-     * The contents of the previous code
+     * The contents of the previous code.
      */
     protected String preCode;
     

@@ -36,22 +36,22 @@ import java.util.Map;
 public class Recorder {
     
     /**
-     * The single instance of this recorder
+     * The single instance of this recorder.
      */
     private static Recorder instance = new Recorder();
     
     /**
-     * The collection of recorders that record document macros
+     * The collection of recorders that record document macros.
      */
     private static Map<String, DocMacroRecorder> docRecorders = new HashMap<String, DocMacroRecorder>();
     
     /**
-     * A recorder that records menu actions
+     * A recorder that records menu actions.
      */
     private MenuMacroRecorder menuRecorder;
     
     /**
-     * A compressor that compresses macros
+     * A compressor that compresses macros.
      */
     private MacroCompressor compressor;
     
