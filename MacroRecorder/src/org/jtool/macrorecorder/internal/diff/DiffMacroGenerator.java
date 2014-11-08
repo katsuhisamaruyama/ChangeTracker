@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 /**
- * Generates diff operations from differences between the contents of two the source files.
+ * Generates diff macros from differences between the contents of two the source files.
  * @author Katsuhisa Maruyama
  */
 public class DiffMacroGenerator {
@@ -34,7 +34,7 @@ public class DiffMacroGenerator {
     }
     
     /**
-     * Generates diff operations from the differences between two textual contents.
+     * Generates diff macros from the differences between two textual contents.
      * @param time the time when this operation was inserted
      * @param path the name of the file path on which this operation was performed
      * @param author the author who performed this change operation
