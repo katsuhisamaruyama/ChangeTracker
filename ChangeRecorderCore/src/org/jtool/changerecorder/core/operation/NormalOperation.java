@@ -191,8 +191,8 @@ public class NormalOperation extends TextOperation {
      * @return the string indicating the operation sort
      */
     @Override
-    public OperationType getOperationType() {
-        return OperationType.NORMAL_OPERATION;
+    public IOperation.Type getOperationType() {
+        return IOperation.Type.NORMAL;
     }
     
     /**

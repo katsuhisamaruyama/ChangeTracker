@@ -55,8 +55,8 @@ public class MenuOperation extends AbstractOperation {
      * @return the string indicating the operation sort
      */
     @Override
-    public OperationType getOperationType() {
-        return OperationType.MENU_OPERATION;
+    public IOperation.Type getOperationType() {
+        return IOperation.Type.MENU;
     }
     
 	/**

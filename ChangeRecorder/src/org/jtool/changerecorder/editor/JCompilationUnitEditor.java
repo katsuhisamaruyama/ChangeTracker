@@ -8,7 +8,6 @@ package org.jtool.changerecorder.editor;
 
 import org.jtool.changerecorder.core.operation.FileOperation;
 import org.jtool.changerecorder.core.operation.IOperation;
-import org.jtool.changerecorder.core.operation.OperationType;
 import org.jtool.macrorecorder.recorder.MacroEvent;
 import org.jtool.macrorecorder.util.EditorUtilities;
 import org.jtool.macrorecorder.macro.Macro;
@@ -66,7 +65,7 @@ public class JCompilationUnitEditor extends CompilationUnitEditor {
         
         if (historyManager != null) {
             IOperation op = historyManager.getLastOperation();
-            if (op != null && op.getOperationType() == OperationType.FILE_OPERATION) {
+            if (op != null && op.getOperationType() == IOperation.Type.FILE) {
                 FileOperation fop = (FileOperation)op;
                 if (fop.getActionType() == FileOperation.Type.ACT && fop.getFilePath().compareTo(getInputFilePath()) == 0) {
                     return;

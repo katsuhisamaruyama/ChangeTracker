@@ -73,7 +73,7 @@ public class CompoundOperation extends AbstractOperation {
     public List<IOperation> getLeaves() {
         List<IOperation> leaves = new ArrayList<IOperation>();
         for (IOperation op : operations) {
-            if (op.getOperationType() == OperationType.COMPOUND_OPERATION) {
+            if (op.getOperationType() == IOperation.Type.COMPOUND) {
                 CompoundOperation cop = (CompoundOperation)op;
                 leaves.addAll(cop.getLeaves());
             } else {
@@ -88,8 +88,8 @@ public class CompoundOperation extends AbstractOperation {
      * @return the string indicating the operation sort
      */
     @Override
-    public OperationType getOperationType() {
-        return OperationType.COMPOUND_OPERATION;
+    public IOperation.Type getOperationType() {
+        return IOperation.Type.COMPOUND;
     }
     
     /**

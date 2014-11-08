@@ -149,8 +149,8 @@ public class ResourceOperation extends AbstractOperation {
      * @return the string indicating the operation sort
      */
     @Override
-    public OperationType getOperationType() {
-        return OperationType.RESOURCE_OPERATION;
+    public IOperation.Type getOperationType() {
+        return IOperation.Type.RESOURCE;
     }
     
     /**

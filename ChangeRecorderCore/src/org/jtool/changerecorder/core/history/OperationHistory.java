@@ -8,11 +8,9 @@ package org.jtool.changerecorder.core.history;
 
 import org.jtool.changerecorder.core.operation.CompoundOperation;
 import org.jtool.changerecorder.core.operation.IOperation;
-import org.jtool.changerecorder.core.operation.OperationType;
 import org.jtool.changerecorder.core.util.StringComparator;
 import org.jtool.changerecorder.core.util.XmlFileStream;
 import org.w3c.dom.Document;
-
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,14 +147,14 @@ public class OperationHistory {
      * @return <code>true</code> if the operation is related to the file, otherwise <code>false</code>
      */
     private boolean isRelatedTo(IOperation op, String path) {
-        if (op.getOperationType() == OperationType.NORMAL_OPERATION ||
-            op.getOperationType() == OperationType.FILE_OPERATION ||
-            op.getOperationType() == OperationType.COPY_OPERATION ||
-            op.getOperationType() == OperationType.MENU_OPERATION ||
-            op.getOperationType() == OperationType.RESOURCE_OPERATION) {
+        if (op.getOperationType() == IOperation.Type.NORMAL ||
+            op.getOperationType() == IOperation.Type.FILE ||
+            op.getOperationType() == IOperation.Type.COPY ||
+            op.getOperationType() == IOperation.Type.MENU ||
+            op.getOperationType() == IOperation.Type.RESOURCE) {
             return StringComparator.isSame(op.getFilePath(), path);
             
-        } else if (op.getOperationType() == OperationType.COMPOUND_OPERATION) {
+        } else if (op.getOperationType() == IOperation.Type.COMPOUND) {
             CompoundOperation cop = (CompoundOperation)op;
             for (IOperation o : cop.getLeaves()) {
                 if (StringComparator.isSame(o.getFilePath(), path)) {

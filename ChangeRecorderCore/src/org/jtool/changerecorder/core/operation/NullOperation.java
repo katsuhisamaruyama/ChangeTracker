@@ -47,8 +47,8 @@ public class NullOperation extends AbstractOperation {
      * @return the string indicating the operation sort
      */
     @Override
-    public OperationType getOperationType() {
-        return OperationType.NULL_OPERATION;
+    public IOperation.Type getOperationType() {
+        return IOperation.Type.NULL;
     }
     
     /**

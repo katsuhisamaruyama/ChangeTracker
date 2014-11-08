@@ -13,6 +13,47 @@ package org.jtool.changerecorder.core.operation;
 public interface IOperation {
     
     /**
+     * Defines the type of an operation.
+     */
+    public enum Type {
+        
+        /**
+         * The string indicating if this is a normal operation.
+         */
+        NORMAL,
+        
+        /**
+         * The string indicating if this is a compounded operation.
+         */
+        COMPOUND,
+        
+        /**
+         * The string indicating if this is a copy operation.
+         */
+        COPY,
+        
+        /**
+         * The string indicating if this is a file operation.
+         */
+        FILE,
+        
+        /**
+         * The string indicating if this is a menu operation.
+         */
+        MENU,
+        
+        /**
+         * The string indicating if this is a resource change operation.
+         */
+        RESOURCE,
+        
+        /**
+         * The string indicating if this is a null operation.
+         */
+        NULL;
+    }
+    
+    /**
      * Returns the time when this operation was performed.
      * @return the time of the operation
      */
@@ -40,7 +81,7 @@ public interface IOperation {
      * Returns the sort of this operation.
      * @return the string indicating the operation sort
      */
-    public OperationType getOperationType();
+    public IOperation.Type getOperationType();
     
     /**
      * Tests if this operation is the same as a given one.

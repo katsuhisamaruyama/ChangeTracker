@@ -106,8 +106,8 @@ public class FileOperation extends AbstractOperation {
      * @return the string indicating the operation sort
      */
     @Override
-    public OperationType getOperationType() {
-        return OperationType.FILE_OPERATION;
+    public IOperation.Type getOperationType() {
+        return IOperation.Type.FILE;
     }
     
     /**

@@ -12,12 +12,10 @@ import org.jtool.changerecorder.core.operation.FileOperation;
 import org.jtool.changerecorder.core.operation.IOperation;
 import org.jtool.changerecorder.core.operation.MenuOperation;
 import org.jtool.changerecorder.core.operation.NormalOperation;
-import org.jtool.changerecorder.core.operation.OperationType;
 import org.jtool.changerecorder.core.operation.ResourceOperation;
 import org.jtool.changerecorder.core.operation.TextOperation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -75,27 +73,27 @@ public class Operation2Xml {
         if (op == null) {
             return;
             
-        } else if (op.getOperationType() == OperationType.NORMAL_OPERATION) {
+        } else if (op.getOperationType() == IOperation.Type.NORMAL) {
             Element opElem = appendNormalOperationElement(doc, (NormalOperation)op);
             parent.appendChild(opElem);
             
-        } else if (op.getOperationType() == OperationType.COMPOUND_OPERATION) {
+        } else if (op.getOperationType() == IOperation.Type.COMPOUND) {
             Element opElem = appendCompoundOperationElement(doc, (CompoundOperation)op);
             parent.appendChild(opElem);
             
-        } else if (op.getOperationType() == OperationType.COPY_OPERATION) {
+        } else if (op.getOperationType() == IOperation.Type.COPY) {
             Element opElem = appendCopyOperationElement(doc, (CopyOperation)op);
             parent.appendChild(opElem);
             
-        } else if (op.getOperationType() == OperationType.FILE_OPERATION) {
+        } else if (op.getOperationType() == IOperation.Type.FILE) {
             Element opElem = appendFileOperationElement(doc, (FileOperation)op);
             parent.appendChild(opElem);
             
-        } else if (op.getOperationType() == OperationType.MENU_OPERATION) {
+        } else if (op.getOperationType() == IOperation.Type.MENU) {
             Element opElem = appendMenuOperationElement(doc, (MenuOperation)op);
             parent.appendChild(opElem);
             
-        } else if (op.getOperationType() == OperationType.RESOURCE_OPERATION) {
+        } else if (op.getOperationType() == IOperation.Type.RESOURCE) {
             Element opElem = appendResourceOperationElement(doc, (ResourceOperation)op);
             parent.appendChild(opElem);
             
