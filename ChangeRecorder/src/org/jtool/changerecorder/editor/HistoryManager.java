@@ -44,26 +44,22 @@ import java.util.List;
 public class HistoryManager extends OperationEventSource implements MacroListener {
     
     /**
-     * The single instance of this history manager
+     * The single instance of this history manager.
      */
     private static HistoryManager instance = new HistoryManager();
     
     /**
-     * The operation history
+     * The operation history.
      */
     private OperationHistory history = new OperationHistory();
     
     /**
-     * A recorder that records macros
+     * A recorder that records macros.
      */
     private Recorder recorder = null;
     
     /**
-     * The path of a file whose contents are changed by operations 
-     */
-    
-    /**
-     * A listener that displays operation on the console
+     * A listener that displays operation on the console.
      */
     private OperationEventListener consoleOperationListener = new ConsoleOperationListener();
     
@@ -72,7 +68,6 @@ public class HistoryManager extends OperationEventSource implements MacroListene
      */
     public HistoryManager() {
         super();
-        
         recorder = Recorder.getInstance();
     }
     
@@ -89,7 +84,6 @@ public class HistoryManager extends OperationEventSource implements MacroListene
      */
     public void start() {
         recorder.addMacroListener(this);
-        
         addOperationEventListener(consoleOperationListener);
     }
     
@@ -109,7 +103,6 @@ public class HistoryManager extends OperationEventSource implements MacroListene
     public void stop() {
         if (recorder != null) {
             recorder.removeMacroListener(this);
-            
             removeOperationEventListener(consoleOperationListener);
         }
     }
@@ -276,8 +269,7 @@ public class HistoryManager extends OperationEventSource implements MacroListene
         }
         
         history.write(wpath, encoding);
-        
-        System.out.println(history.toString());
+        // System.out.println(history.toString());
         
         history.clear();
     }

@@ -22,17 +22,17 @@ import java.io.File;
 public class Activator extends AbstractUIPlugin implements IStartup {
     
     /**
-     * The plug-in ID
+     * The plug-in ID.
      */
     public static final String PLUGIN_ID = "ChangeRecorder";
     
     /**
-     * The plug-in instance
+     * The plug-in instance.
      */
     private static Activator plugin;
     
     /**
-     * The top directory that stores history files
+     * The top directory that stores history files.
      */
     public static String DEFAULT_HISTORY_TOPDIR = File.separator + "#history";
     

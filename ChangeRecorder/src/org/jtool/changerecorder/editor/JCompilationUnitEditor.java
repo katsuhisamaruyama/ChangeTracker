@@ -49,9 +49,6 @@ public class JCompilationUnitEditor extends CompilationUnitEditor {
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
-        
-        System.out.println("Init " + getInputFilePath());
-        
         if (historyManager == null) {
             historyManager = HistoryManager.getInstance();
             historyManager.start(this);
@@ -76,7 +73,6 @@ public class JCompilationUnitEditor extends CompilationUnitEditor {
                 }
             }
             
-            System.out.println("setFocus " + getInputFilePath());
             historyManager.recordFileOperation(getInputFile(), getSourceCode(), FileOperation.Type.ACT, false);
         }
     }
@@ -113,9 +109,7 @@ public class JCompilationUnitEditor extends CompilationUnitEditor {
             historyManager.stop(this);
             
             historyManager.recordFileOperation(getInputFile(), getSourceCode(), FileOperation.Type.CLOSE, true);
-            
             historyManager.writeHistory(getInputFile());
-            
             historyManager = null;
         }
         
