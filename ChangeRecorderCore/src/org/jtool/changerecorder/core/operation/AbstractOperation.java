@@ -96,6 +96,14 @@ public abstract class AbstractOperation implements IOperation {
     }
     
     /**
+     * Sets the sequence number that indicates the order of operations in the same time.
+     * @param number the sequence number of this operation
+     */
+    public void setSequenceNumber(int number) {
+        this.sequenceNumber = number;
+    }
+    
+    /**
      * Returns the sequence number that indicates the order of operations in the same time.
      * @return the sequence number of this operation
      */

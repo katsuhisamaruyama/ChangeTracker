@@ -18,11 +18,6 @@ public enum OperationType {
     NORMAL_OPERATION,
     
     /**
-     * The string indicating if this is an operation derived from <code>diff</code>.
-     */
-    DIFF_OPERATION,
-    
-    /**
      * The string indicating if this is a compounded operation.
      */
     COMPOUND_OPERATION,
@@ -60,7 +55,6 @@ public enum OperationType {
     public static boolean isTextOperation(IOperation op) {
         OperationType type = op.getOperationType();
         return type == OperationType.NORMAL_OPERATION ||
-               type == OperationType.DIFF_OPERATION ||
                type == OperationType.COMPOUND_OPERATION;
     }
 }

@@ -150,7 +150,6 @@ public class OperationHistory {
      */
     private boolean isRelatedTo(IOperation op, String path) {
         if (op.getOperationType() == OperationType.NORMAL_OPERATION ||
-            op.getOperationType() == OperationType.DIFF_OPERATION ||
             op.getOperationType() == OperationType.FILE_OPERATION ||
             op.getOperationType() == OperationType.COPY_OPERATION ||
             op.getOperationType() == OperationType.MENU_OPERATION ||
