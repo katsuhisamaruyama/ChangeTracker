@@ -37,11 +37,9 @@ public class DiffMacroGenerator {
      * Generates diff macros from the differences between two textual contents.
      * @param time the time when this operation was inserted
      * @param path the name of the file path on which this operation was performed
-     * @param author the author who performed this change operation
-     * @param rev the revision that contains this change operation
      * @param otext the old contents of the file
      * @param ntext the new contents of the file
-     * @return the collection of the generated change operations
+     * @return the collection of the generated diff macros
      */
     public static List<DiffMacro> generate(long time, String path, String otext, String ntext) {
         List<DiffMacro> macros = new ArrayList<DiffMacro>();
