@@ -51,26 +51,6 @@ public class CompoundOperation extends AbstractOperation {
     }
     
     /**
-     * Resets the time of operations that are contained in this compound operation.
-     * @param time the time that are newly set
-     * @param operations the collection of the contained operations
-     */
-    @SuppressWarnings("unused")
-    private void resetTimeForCompoundOperations(long time, List<IOperation> operations) {
-        for (IOperation op : operations) {
-            if (op.getOperationType() == OperationType.NORMAL_OPERATION) {
-                NormalOperation nop = (NormalOperation)op;
-                nop.time = time;
-                
-            } else if (op.getOperationType() == OperationType.COMPOUND_OPERATION) {
-                CompoundOperation cop = (CompoundOperation)op;
-                cop.time = time;
-                resetTimeForCompoundOperations(time, cop.operations);
-            }
-        }
-    }
-    
-    /**
      * Returns the array of operations contained in this operation.
      * @return the contained operations
      */
