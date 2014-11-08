@@ -12,7 +12,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
 import java.io.File;
 
 /**
@@ -64,7 +63,6 @@ public class Activator extends AbstractUIPlugin implements IStartup {
      */
     @Override
     public void stop(BundleContext context) throws Exception {
-        // historyManager.write();
         HistoryManager.getInstance().stop();
         
         super.stop(context);

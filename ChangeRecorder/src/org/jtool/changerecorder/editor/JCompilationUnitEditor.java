@@ -6,8 +6,8 @@
 
 package org.jtool.changerecorder.editor;
 
-import org.jtool.changerecorder.core.operation.FileOperation;
-import org.jtool.changerecorder.core.operation.IOperation;
+import org.jtool.changerecorder.operation.FileOperation;
+import org.jtool.changerecorder.operation.IOperation;
 import org.jtool.macrorecorder.recorder.MacroEvent;
 import org.jtool.macrorecorder.util.EditorUtilities;
 import org.jtool.macrorecorder.macro.Macro;

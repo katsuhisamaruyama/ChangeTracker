@@ -17,4 +17,10 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.106.0",
  ChangeRecorderCore;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/commons-io-2.4.jar
+Export-Package: org.jtool.changerecorder.diff,
+ org.jtool.changerecorder.event,
+ org.jtool.changerecorder.history,
+ org.jtool.changerecorder.operation,
+ org.jtool.changerecorder.util

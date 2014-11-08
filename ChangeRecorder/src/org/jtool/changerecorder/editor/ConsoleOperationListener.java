@@ -6,8 +6,8 @@
 
 package org.jtool.changerecorder.editor;
 
-import org.jtool.changerecorder.core.event.OperationEvent;
-import org.jtool.changerecorder.core.event.OperationEventListener;
+import org.jtool.changerecorder.event.OperationEvent;
+import org.jtool.changerecorder.event.OperationEventListener;
 
 /**
  * Displays operations recorded on editors.
