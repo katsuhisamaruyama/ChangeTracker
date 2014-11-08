@@ -292,9 +292,6 @@ public class HistoryManager extends OperationEventSource implements MacroListene
      * @param codeWrite <code>true</code> if source code will be written, otherwise <code>false</code>
      */
     void recordResourceOperation(ResourceMacro macro) {
-        // ResourceOperation op
-        // storeOperation(op);
-        
         // System.out.println(op.toString());
     }
 }
