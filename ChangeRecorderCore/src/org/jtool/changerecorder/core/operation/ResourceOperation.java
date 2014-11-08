@@ -49,6 +49,9 @@ public class ResourceOperation extends AbstractOperation {
         }
     }
     
+    /**
+     * Defines the target of a resource change.
+     */
     public enum Target {
         
         /**
@@ -75,17 +78,17 @@ public class ResourceOperation extends AbstractOperation {
     }
     
     /**
-     * The type of the resource change performed by this operation
+     * The type of the resource change performed by this operation.
      */
     protected Type actionType;
     
     /**
-     * The target of the resource change performed by this operation
+     * The target of the resource change performed by this operation.
      */
     protected Target target;
     
     /**
-     * The path of a resource identical to the resource changed by this macro
+     * The path of a resource identical to the resource changed by this macro.
      */
     private String ipath;
     

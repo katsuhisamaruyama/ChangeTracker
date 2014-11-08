@@ -16,7 +16,7 @@ import org.jtool.changerecorder.core.util.Whoami;
 public abstract class AbstractOperation implements IOperation {
     
     /**
-     * The time when this operation was performed
+     * The time when this operation was performed.
      */
     protected long time;
     
@@ -26,12 +26,12 @@ public abstract class AbstractOperation implements IOperation {
     private int sequenceNumber = 0;
     
     /**
-     * The path name of the file on which this operation was performed
+     * The path name of the file on which this operation was performed.
      */
     protected String path;
     
     /**
-     * The name of a developer who performed this operation
+     * The name of a developer who performed this operation.
      */
     protected String author;
     

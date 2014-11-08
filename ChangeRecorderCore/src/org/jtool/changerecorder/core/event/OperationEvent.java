@@ -14,15 +14,20 @@ import org.jtool.changerecorder.core.operation.IOperation;
  */
 public class OperationEvent {
     
-    public static final int OPERATION_ADDED = 1;
-    
     /**
-     * The type of this event
+     * Defines the type of this event.
      */
-    private int type;
+    public enum Type {
+        OPERATION_ADDED, DEFAULT;
+    }
     
     /**
-     * The operation sent by this operation event
+     * The type of this event.
+     */
+    private OperationEvent.Type type = OperationEvent.Type.DEFAULT;
+    
+    /**
+     * The operation sent by this operation event.
      */
     private IOperation operation;
     
@@ -31,7 +36,7 @@ public class OperationEvent {
      * @param type the type of this operation event
      * @param operation the operation sent by this operation event
      */
-    public OperationEvent(int type, IOperation operation) {
+    public OperationEvent(OperationEvent.Type type, IOperation operation) {
         this.type = type;
         this.operation = operation;
     }
@@ -46,9 +51,9 @@ public class OperationEvent {
     
     /**
      * Returns the type of this operation event.
-     * @return the type of this operation event
+     * @return the event type
      */
-    public int getType() {
+    public OperationEvent.Type getType() {
         return type;
     }
     

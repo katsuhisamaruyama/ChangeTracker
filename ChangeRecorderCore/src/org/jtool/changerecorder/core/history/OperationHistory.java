@@ -25,7 +25,7 @@ import java.util.Comparator;
 public class OperationHistory {
     
     /**
-     * The editing operations correctly stored into the operation history
+     * The editing operations correctly stored into the operation history.
      */
     protected List<IOperation> operations;
     

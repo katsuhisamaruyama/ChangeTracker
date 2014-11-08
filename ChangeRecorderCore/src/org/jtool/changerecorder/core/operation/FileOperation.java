@@ -43,12 +43,12 @@ public class FileOperation extends AbstractOperation {
     }
     
     /**
-     * The sort of the file action for this operation
+     * The sort of the file action for this operation.
      */
     protected Type actionType;
     
     /**
-     * The contents of the source code when this file operation was performed
+     * The contents of the source code when this file operation was performed.
      */
     protected String code;
     

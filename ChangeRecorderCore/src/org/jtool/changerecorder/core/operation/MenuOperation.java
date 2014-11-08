@@ -16,7 +16,7 @@ import org.jtool.changerecorder.core.util.Time;
 public class MenuOperation extends AbstractOperation {
     
     /**
-     * The label indicating the contents of this operation
+     * The label indicating the contents of this operation.
      */
     protected String label;
     

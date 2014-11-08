@@ -16,12 +16,12 @@ import org.jtool.changerecorder.core.util.Time;
 public class CopyOperation extends AbstractOperation {
     
     /**
-     * The leftmost offset of the text modified by this editing operation
+     * The leftmost offset of the text modified by this editing operation.
      */
     protected int start;
     
     /**
-     * The content of the text copied by this editing operation
+     * The content of the text copied by this editing operation.
      */
     protected String copiedText;
     

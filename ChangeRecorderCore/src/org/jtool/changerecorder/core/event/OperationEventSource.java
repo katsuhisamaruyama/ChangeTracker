@@ -49,7 +49,7 @@ public class OperationEventSource {
      * @param evt the operation event.
      */
     protected void notify(IOperation op) {
-        OperationEvent evt = new OperationEvent(OperationEvent.OPERATION_ADDED, op);
+        OperationEvent evt = new OperationEvent(OperationEvent.Type.OPERATION_ADDED, op);
         for (OperationEventListener listener : listeners) {
             listener.historyNotification(evt);
         }

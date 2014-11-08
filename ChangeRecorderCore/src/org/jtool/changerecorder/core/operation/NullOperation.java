@@ -14,7 +14,7 @@ package org.jtool.changerecorder.core.operation;
 public class NullOperation extends AbstractOperation {
     
     /**
-     * The cache that stores the original operation
+     * The cache that stores the original operation.
      */
     private IOperation originalOperation = null;
     

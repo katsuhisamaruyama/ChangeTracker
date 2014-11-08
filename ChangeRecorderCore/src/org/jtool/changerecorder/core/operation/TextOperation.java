@@ -15,17 +15,17 @@ import org.jtool.changerecorder.core.util.StringComparator;
 public abstract class TextOperation extends AbstractOperation {
     
     /**
-     * The leftmost offset of the text modified by this operation
+     * The leftmost offset of the text modified by this operation.
      */
     protected int start;
     
     /**
-     * The contents of the text inserted by this operation
+     * The contents of the text inserted by this operation.
      */
     protected String insertedText = "";
     
     /**
-     * The contents of the text deleted by this operation
+     * The contents of the text deleted by this operation.
      */
     protected String deletedText = "";
     

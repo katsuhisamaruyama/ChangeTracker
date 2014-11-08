@@ -22,7 +22,7 @@ public class NormalOperation extends TextOperation {
         EDIT, CUT, PASTE, UNDO, REDO, DIFF, OFF_EDIT, NO;
         
         /**
-         * Checks the type of a normal operation
+         * Checks the type of a normal operation.
          * @param str the string indicating the type 
          * @return the type of the file action, or <code>NO</code> if none
          */
@@ -47,7 +47,7 @@ public class NormalOperation extends TextOperation {
     }
     
     /**
-     * The sort of the edit action for this operation
+     * The sort of the edit action for this operation.
      */
     private Type actionType = Type.EDIT;
     

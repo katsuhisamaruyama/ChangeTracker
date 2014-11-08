@@ -18,12 +18,12 @@ import java.util.List;
 public class CompoundOperation extends AbstractOperation {
     
     /**
-     * The array list of operations contained in this operation
+     * The array list of operations contained in this operation.
      */
     private List<IOperation> operations = new ArrayList<IOperation>();
     
     /**
-     * The label indicating the name of this operation
+     * The label indicating the name of this operation.
      */
     protected String label;
     

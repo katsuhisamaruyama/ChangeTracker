@@ -16,12 +16,12 @@ import java.io.InputStreamReader;
 public class Whoami {
     
     /**
-     * The name of a command for obtaining developer's name
+     * The name of a command for obtaining developer's name.
      */
     private static final String whoamiCmd = "whoami";
     
     /**
-     * The user name
+     * The user name.
      */
     private static String userName = null;
     

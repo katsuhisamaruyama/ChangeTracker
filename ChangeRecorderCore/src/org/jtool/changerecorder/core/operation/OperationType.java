@@ -13,42 +13,42 @@ package org.jtool.changerecorder.core.operation;
 public enum OperationType {
     
     /**
-     * The string indicating if this is a normal operation
+     * The string indicating if this is a normal operation.
      */
     NORMAL_OPERATION,
     
     /**
-     * The string indicating if this is an operation derived from <code>diff</code>
+     * The string indicating if this is an operation derived from <code>diff</code>.
      */
     DIFF_OPERATION,
     
     /**
-     * The string indicating if this is a compounded operation
+     * The string indicating if this is a compounded operation.
      */
     COMPOUND_OPERATION,
     
     /**
-     * The string indicating if this is a copy operation
+     * The string indicating if this is a copy operation.
      */
     COPY_OPERATION,
     
     /**
-     * The string indicating if this is a file operation
+     * The string indicating if this is a file operation.
      */
     FILE_OPERATION,
     
     /**
-     * The string indicating if this is a menu operation
+     * The string indicating if this is a menu operation.
      */
     MENU_OPERATION,
     
     /**
-     * The string indicating if this is a resource change operation
+     * The string indicating if this is a resource change operation.
      */
     RESOURCE_OPERATION,
     
     /**
-     * The string indicating if this is a null operation
+     * The string indicating if this is a null operation.
      */
     NULL_OPERATION;
     
