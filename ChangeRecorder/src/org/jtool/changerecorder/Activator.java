@@ -8,10 +8,13 @@ package org.jtool.changerecorder;
 
 import org.jtool.changerecorder.editor.HistoryManager;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
 import java.io.File;
 
 /**
@@ -90,5 +93,15 @@ public class Activator extends AbstractUIPlugin implements IStartup {
      */
     public IWorkspace getWorkspace() {
         return ResourcesPlugin.getWorkspace();
+    }
+    
+    /**
+     * Returns the directory path of the plug-in's workspace, which contains operation history. 
+     * @return the the directory into which the operation history is stored
+     */
+    public String getOperationHistoryDirPath() {
+        IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+        IPath workspaceDir = workspaceRoot.getLocation();
+        return workspaceDir.append(Activator.DEFAULT_HISTORY_TOPDIR).toString();
     }
 }

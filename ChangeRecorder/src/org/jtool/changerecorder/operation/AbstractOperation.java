@@ -130,6 +130,24 @@ public abstract class AbstractOperation implements IOperation {
     }
     
     /**
+     * Tests if a given operation edits any text.
+     * @return <code>true</code> if the operation is a text edit operation
+     */
+    public boolean isTextEditOperation() {
+        IOperation.Type type = getOperationType();
+        return type == IOperation.Type.NORMAL || type == IOperation.Type.COMPOUND || type == IOperation.Type.COPY;
+    }
+    
+    /**
+     * Tests if a given operation changes any text.
+     * @return <code>true</code> if the operation is a text change operation
+     */
+    public boolean isTextChangedOperation() {
+        IOperation.Type type = getOperationType();
+        return type == IOperation.Type.NORMAL || type == IOperation.Type.COMPOUND;
+    }
+    
+    /**
      * Tests if this operation is the same as a given one.
      * @param op the given operation
      * @return <code>true</code> if the two operations are the same, otherwise <code>false</code>

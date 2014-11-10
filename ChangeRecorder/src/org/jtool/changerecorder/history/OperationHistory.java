@@ -6,6 +6,7 @@
 
 package org.jtool.changerecorder.history;
 
+import org.jtool.changerecorder.Activator;
 import org.jtool.changerecorder.operation.CompoundOperation;
 import org.jtool.changerecorder.operation.IOperation;
 import org.jtool.changerecorder.util.StringComparator;
@@ -205,6 +206,14 @@ public class OperationHistory {
         return true;
     }
     
+     /**
+      * Returns the directory path of the plug-in's workspace, which contains operation history. 
+      * @return the the directory into which the operation history is stored
+      */
+     public static String getOperationHistoryDirPath() {
+         return Activator.getPlugin().getOperationHistoryDirPath();
+     }
+     
     /**
      * Sorts the operations in time order.
      * @param the collection of the operations to be sorted

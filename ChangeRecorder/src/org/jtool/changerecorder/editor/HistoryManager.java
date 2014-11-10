@@ -6,7 +6,6 @@
 
 package org.jtool.changerecorder.editor;
 
-import org.jtool.changerecorder.Activator;
 import org.jtool.changerecorder.event.OperationEventListener;
 import org.jtool.changerecorder.event.OperationEventSource;
 import org.jtool.changerecorder.history.OperationHistory;
@@ -29,10 +28,7 @@ import org.jtool.macrorecorder.macro.CompoundMacro;
 import org.jtool.macrorecorder.macro.ResourceMacro;
 import org.jtool.macrorecorder.util.WorkspaceUtilities;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorPart;
 import java.util.ArrayList;
 import java.util.List;
@@ -255,9 +251,13 @@ public class HistoryManager extends OperationEventSource implements MacroListene
      * @param file the file
      */
     void writeHistory(IFile file) {
+        if (!toBeWritten(history)) {
+            return;
+        }
+        
         history.sort();
         
-        String dpath = getOperationHistoryDirPath();
+        String dpath = OperationHistory.getOperationHistoryDirPath();
         String wpath = dpath + '/' + String.valueOf(Time.getCurrentTime()) + ".xml";
         String encoding = WorkspaceUtilities.getEncoding();
         try {
@@ -275,13 +275,47 @@ public class HistoryManager extends OperationEventSource implements MacroListene
     }
     
     /**
-     * Returns the directory path of the plug-in's workspace, which contains operation history. 
-     * @return the the directory into which the operation history is stored
+     * Tests if a given history will be written.
+     * @param history the history to be checked
+     * @return <code>true</code> the history should be written, otherwise <code>false</code>
      */
-    public static String getOperationHistoryDirPath() {
-        IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-        IPath workspaceDir = workspaceRoot.getLocation();
-        return workspaceDir.append(Activator.DEFAULT_HISTORY_TOPDIR).toString();
+    private boolean toBeWritten(OperationHistory history) {
+        if (history.size() == 0) {
+            return false;
+        }
+        
+        if (history.size() == 1) {
+            return true;
+        }
+        
+        IOperation op1 = history.getOperation(0);
+        if (op1.getOperationType() != IOperation.Type.FILE) {
+            return true;
+        }
+        
+        FileOperation fop1 = (FileOperation)op1;
+        if (fop1.getActionType() != FileOperation.Type.OPEN) {
+            return true;
+        }
+        
+        IOperation op2 = history.getOperation(history.size() - 1);
+        if (op2.getOperationType() != IOperation.Type.FILE) {
+            return true;
+        }
+        
+        FileOperation fop2 = (FileOperation)op2;
+        if (fop2.getActionType() != FileOperation.Type.CLOSE) {
+            return true;
+        }
+        
+        for (int idx = 1; idx < history.size() - 1; idx++) {
+            IOperation op = history.getOperation(idx);
+            if (op.isTextEditOperation()) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     /**

@@ -84,6 +84,18 @@ public interface IOperation {
     public IOperation.Type getOperationType();
     
     /**
+     * Tests if a given operation edits any text.
+     * @return <code>true</code> if the operation is a text edit operation
+     */
+    public boolean isTextEditOperation();
+    
+    /**
+     * Tests if a given operation changes any text.
+     * @return <code>true</code> if the operation is a text change operation
+     */
+    public boolean isTextChangedOperation();
+    
+    /**
      * Tests if this operation is the same as a given one.
      * @param op the given operation
      * @return <code>true</code> if the two operations are the same, otherwise <code>false</code>
