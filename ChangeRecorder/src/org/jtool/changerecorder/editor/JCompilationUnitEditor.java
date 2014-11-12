@@ -10,8 +10,6 @@ import org.jtool.changerecorder.operation.FileOperation;
 import org.jtool.changerecorder.operation.IOperation;
 import org.jtool.macrorecorder.recorder.MacroEvent;
 import org.jtool.macrorecorder.util.EditorUtilities;
-import org.jtool.macrorecorder.macro.Macro;
-import org.jtool.macrorecorder.macro.CompoundMacro;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -48,11 +46,12 @@ public class JCompilationUnitEditor extends CompilationUnitEditor {
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
+        
         if (historyManager == null) {
             historyManager = HistoryManager.getInstance();
             historyManager.start(this);
             
-            historyManager.recordFileOperation(getInputFile(), getSourceCode(), FileOperation.Type.OPEN, true);
+            historyManager.recordFileOpenOperation(getInputFile(), getSourceCode());
         }
     }
     
@@ -152,6 +151,7 @@ public class JCompilationUnitEditor extends CompilationUnitEditor {
      * @param evt the macro event
      */
     public void macroAdded(MacroEvent evt) {
+        /*
         Macro macro = evt.getMacro();
         System.out.println(macro.toString());
         if (macro instanceof CompoundMacro) {
@@ -160,6 +160,7 @@ public class JCompilationUnitEditor extends CompilationUnitEditor {
                 System.out.println(" " + m.toString());
             }
         }
+        */
     }
     
     /**

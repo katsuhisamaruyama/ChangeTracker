@@ -125,15 +125,15 @@ public class CompoundOperation extends AbstractOperation {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append("(");
+        buf.append("{");
         buf.append(Time.toUsefulFormat(time));
-        buf.append(" l:[" + label + "]\n");
+        buf.append(" label=[" + label + "]\n");
         
         for (IOperation op : operations) {
             buf.append("  " + op.toString());
             buf.append("\n");
         }
-        buf.append(")");
+        buf.append("}");
         
         return buf.toString();
     }

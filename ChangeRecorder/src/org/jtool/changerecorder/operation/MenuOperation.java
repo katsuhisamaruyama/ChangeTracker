@@ -83,9 +83,9 @@ public class MenuOperation extends AbstractOperation {
         StringBuilder buf = new StringBuilder();
         buf.append(Time.toUsefulFormat(time));
         buf.append(" MENU ");
-        buf.append("l:[" + label + "] ");
-        buf.append("aut:[" + author + "] ");
-        buf.append("path:[" + path + "] ");
+        buf.append(" label=[" + label + "]");
+        buf.append(" autor=[" + author + "]");
+        buf.append(" path=" + path);
         
         return buf.toString();
     }

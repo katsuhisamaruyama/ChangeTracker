@@ -177,13 +177,12 @@ public class ResourceOperation extends AbstractOperation {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append(Time.toUsefulFormat(time) + " ");
-        buf.append("RESOURCE CHANGE ");
-        buf.append("act:[" + actionType.name() + "] ");
-        buf.append("tar:[" + target.name() + "] ");
-        buf.append("aut:[" + author + "] ");
-        buf.append("path:[" + path + "] ");
-        buf.append("ipath:[" + ipath + "] ");
+        buf.append(Time.toUsefulFormat(time));
+        buf.append(" " + actionType.name());
+        buf.append(" author=[" + author + "]");
+        buf.append(" target=" + target.name());
+        buf.append(" path=" + path);
+        buf.append(" ipath=" + ipath);
         
         return buf.toString();
     }

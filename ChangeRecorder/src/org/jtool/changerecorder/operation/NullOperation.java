@@ -67,6 +67,6 @@ public class NullOperation extends AbstractOperation {
      */
     @Override
     public String toString() {
-        return "NULL OPERATION";
+        return "NULL";
     }
 }

@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -127,7 +128,7 @@ public class Xml2Operation {
         NodeList childList = elem.getChildNodes();
         for (int i = 0; i < childList.getLength(); i++) {
             if (childList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                ops.add(getNormalOperation((Element)childList.item(i)));
+                ops.add(getOperation((Element)childList.item(i)));
             }
         }
         
@@ -149,7 +150,7 @@ public class Xml2Operation {
         String copiedText = getFirstChildText(elem.getElementsByTagName(XmlConstantStrings.CopiedElem));
         
         CopyOperation op = new CopyOperation(Long.parseLong(time),
-          file, author, Integer.parseInt(offset), copiedText);
+            file, author, Integer.parseInt(offset), copiedText);
         return op;
     }
     
@@ -165,6 +166,9 @@ public class Xml2Operation {
         String author = elem.getAttribute(XmlConstantStrings.AuthorAttr);
         
         String code = getFirstChildText(elem.getElementsByTagName(XmlConstantStrings.CodeElem));
+        if (code == null) {
+            code = "";
+        }
         
         FileOperation op = new FileOperation(Long.parseLong(time),
             file, author, FileOperation.Type.parseType(action), code);
@@ -182,8 +186,7 @@ public class Xml2Operation {
         String label = elem.getAttribute(XmlConstantStrings.LabelAttr);
         String author = elem.getAttribute(XmlConstantStrings.AuthorAttr);
         
-        MenuOperation op = new MenuOperation(Long.parseLong(time),
-            file, author, label);
+        MenuOperation op = new MenuOperation(Long.parseLong(time), file, author, label);
         return op;
     }
     

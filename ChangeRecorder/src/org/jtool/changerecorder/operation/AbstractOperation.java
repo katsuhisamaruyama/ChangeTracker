@@ -148,6 +148,24 @@ public abstract class AbstractOperation implements IOperation {
     }
     
     /**
+     * Converts a text into its pretty one.
+     * @param text the original text
+     * @return the text consists of the first four characters not including the new line
+     */
+    public String getText(String text) {
+        final int LESS_LEN = 9;
+        
+        String text2;
+        if (text.length() < LESS_LEN + 1) {
+            text2 = text;
+        } else {
+            text2 = text.substring(0, LESS_LEN + 1) + "...";
+        }
+        
+        return text2.replace('\n', '~');
+    }
+    
+    /**
      * Tests if this operation is the same as a given one.
      * @param op the given operation
      * @return <code>true</code> if the two operations are the same, otherwise <code>false</code>

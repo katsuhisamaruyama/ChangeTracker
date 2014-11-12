@@ -98,10 +98,11 @@ public class CopyOperation extends AbstractOperation {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append(Time.toUsefulFormat(time) + " ");
-        buf.append("s:" + start + " ");
-        buf.append("aut:[" + author + "] ");
-        buf.append("copied:[" + copiedText + "]\n");
+        buf.append(Time.toUsefulFormat(time));
+        buf.append(" author=[" + author + "]");
+        buf.append(" path=" + path + "]");
+        buf.append(" offset=" + start);
+        buf.append(" copied=[" + getText(copiedText) + "]\n");
         
         return buf.toString();
     }

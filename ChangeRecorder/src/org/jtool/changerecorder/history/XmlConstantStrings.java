@@ -13,7 +13,8 @@ package org.jtool.changerecorder.history;
  */
 public interface XmlConstantStrings {
     
-    static final String OperationHistoryElem = "OperationHistoryJ2";
+    static final String OperationHistoryElem = "OperationHistory";
+    static final String OperationHistoryVersion = "1.0a";
     static final String OperationsElem = "operations";
     
     static final String NormalOperationElem = "normalOperation";

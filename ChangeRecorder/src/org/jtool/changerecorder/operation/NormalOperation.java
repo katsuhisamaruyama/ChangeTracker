@@ -217,13 +217,13 @@ public class NormalOperation extends TextOperation {
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append(Time.toUsefulFormat(time) + " ");
-        buf.append("s:" + start + " ");
-        buf.append("ins:[" + insertedText + "] ");
-        buf.append("del:[" + deletedText + "] ");
-        buf.append("path:[" + path + "] ");
-        buf.append("act:[" + actionType.toString() + "] ");
-        buf.append("aut:[" + author + "] ");
+        buf.append(Time.toUsefulFormat(time));
+        buf.append(" " + actionType.toString());
+        buf.append(" author=[" + author + "]");
+        buf.append(" path=" + path + "]");
+        buf.append(" offset=" + start);
+        buf.append(" ins=[" + getText(insertedText) + "]");
+        buf.append(" del=[" + getText(deletedText) + "]");
         
         return buf.toString();
     }

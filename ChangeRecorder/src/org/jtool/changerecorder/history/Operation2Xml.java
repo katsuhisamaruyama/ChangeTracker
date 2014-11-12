@@ -52,7 +52,7 @@ public class Operation2Xml {
      */
     private static void generateTree(Document doc, OperationHistory history) {
         Element rootElem = doc.createElement(XmlConstantStrings.OperationHistoryElem);
-        rootElem.setAttribute(XmlConstantStrings.VersionAttr, "5.0.2b");
+        rootElem.setAttribute(XmlConstantStrings.VersionAttr, XmlConstantStrings.OperationHistoryVersion);
         doc.appendChild(rootElem);
         
         Element operations = doc.createElement(XmlConstantStrings.OperationsElem);

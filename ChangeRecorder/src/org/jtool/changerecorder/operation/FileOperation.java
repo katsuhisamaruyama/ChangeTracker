@@ -19,7 +19,7 @@ public class FileOperation extends AbstractOperation {
      * Defines the type of a file action.
      */
     public enum Type {
-        OPEN, CLOSE, SAVE, ACT, INSTANT, NONE;
+        NEW, OPEN, CLOSE, SAVE, DELETE, ACT, INSTANT, NONE;
         
         /**
          * Checks the type of the file action
@@ -27,12 +27,16 @@ public class FileOperation extends AbstractOperation {
          * @return the type of the file action, or <code>NONE</code> if none
          */
         public static Type parseType(String str) {
-            if (StringComparator.isSameIgnoreCase(str, "open")) {
+            if (StringComparator.isSameIgnoreCase(str, "new")) {
+                return NEW;
+            } else if (StringComparator.isSameIgnoreCase(str, "open")) {
                 return OPEN;
             } else if (StringComparator.isSameIgnoreCase(str, "close")) {
                 return CLOSE;
             } else if (StringComparator.isSameIgnoreCase(str, "save")) {
                 return SAVE;
+            } else if (StringComparator.isSameIgnoreCase(str, "delete")) {
+                return DELETE;
             } else if (StringComparator.isSameIgnoreCase(str, "act")) {
                 return ACT;
             } else if (StringComparator.isSameIgnoreCase(str, "instant")) {
@@ -134,12 +138,11 @@ public class FileOperation extends AbstractOperation {
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append(Time.toUsefulFormat(time));
-        buf.append(" FILE ");
-        buf.append("act:[" + actionType.toString() + "] ");
-        buf.append("aut:[" + author + "] ");
-        buf.append("path:[" + path + "] ");
+        buf.append(" " + actionType.toString());
+        buf.append(" author=[" + author + "]");
+        buf.append(" path=" + path);
         if (code != null) {
-            buf.append(" [" + code.substring(0, Math.min(12, code.length())) + "...]");
+            buf.append(" code=[" + getText(code) + "]");
         }
         
         return buf.toString();
