@@ -58,8 +58,6 @@ public class DocMacroRecorderOffEdit extends DocMacroRecorder {
         super.start();
     }
     
-    
-    
     /**
      * Stops the recording of macros.
      */
@@ -116,13 +114,13 @@ public class DocMacroRecorderOffEdit extends DocMacroRecorder {
     
     /**
      * Obtains the current contents of a file under recording.
-     * @return the contents of source code
+     * @return the contents of source code, or <code>null</code> if source code does not exist
      */
     protected String getCurrentCode() {
         IDocument doc = EditorUtilities.getDocument(file);
         if (doc != null) {
             return doc.get();
         }
-        return "";
+        return null;
     }
 }

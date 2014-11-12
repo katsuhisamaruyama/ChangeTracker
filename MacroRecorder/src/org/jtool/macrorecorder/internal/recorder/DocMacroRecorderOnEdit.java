@@ -158,6 +158,9 @@ public class DocMacroRecorderOnEdit extends DocMacroRecorder {
             
             recordRawMacro(cmacro);
             dumpMacros(cmacro);
+            
+        } else if (macro.getCommandId().compareTo("org.eclipse.ui.edit.delete") == 0) {
+            macro.setType("Delete");
         }
     }
     
@@ -187,13 +190,13 @@ public class DocMacroRecorderOnEdit extends DocMacroRecorder {
     
     /**
      * Obtains the current contents of a file under recording.
-     * @return the contents of source code
+     * @return the contents of source code, or <code>null</code> if source code does not exist
      */
     protected String getCurrentCode() {
         IDocument doc = EditorUtilities.getDocument(editor);
         if (doc != null) {
             return doc.get();
         }
-        return "";
+        return null;
     }
 }

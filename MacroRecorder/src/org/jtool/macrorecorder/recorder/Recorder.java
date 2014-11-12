@@ -318,7 +318,7 @@ public class Recorder {
      * Removes a recorder that records document macros related to a file.
      * @param path the path of the file
      */
-    static void removeDocRecorder(String path) {
+    public static void removeDocRecorder(String path) {
         docRecorders.remove(path);
     }
     

@@ -22,11 +22,12 @@ public class CompoundMacro extends Macro {
     
     /**
      * Creates an object storing information on a compound macro.
+     * @param stime the time when the macro started
      * @param the type of the macro
      * @param path the path of a file or a package this macro was performed
      */
-    public CompoundMacro(String type, String path) {
-        super(Long.MAX_VALUE, Long.MIN_VALUE, type, path);
+    public CompoundMacro(long stime, String type, String path) {
+        super(stime, stime, type, path);
     }
     
     /**

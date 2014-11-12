@@ -78,7 +78,6 @@ public class DocMacroRecorder {
         this.rawMacros = new ArrayList<Macro>();
     }
     
-    
     /**
      * Starts the recording of document macros.
      */
@@ -159,10 +158,10 @@ public class DocMacroRecorder {
         recordRawMacro(macro);
         dumpMacros(macro);
         
-        System.out.println(macro.toString());
-        
-        System.out.println("PRE = " + preCode);
-        System.out.println("POST = " + macro.getCode());
+        if (macro.isRemoved()) {
+            System.out.println("DELETE RECORDER");
+            Recorder.removeDocRecorder(macro.getPath());
+        }
     }
     
     /**
@@ -233,7 +232,7 @@ public class DocMacroRecorder {
         if (macro instanceof TriggerMacro) {
             TriggerMacro tmacro = (TriggerMacro)macro;
             if (compoundMacro == null && tmacro.isBegin()) {
-                compoundMacro = new CompoundMacro(tmacro.getType(), macro.getPath());
+                compoundMacro = new CompoundMacro(tmacro.getStartTime(), tmacro.getType(), macro.getPath());
                 
             } else if (tmacro.isEnd() || tmacro.isCursorChange()) {
                 if (compoundMacro != null) {
@@ -269,10 +268,10 @@ public class DocMacroRecorder {
     
     /**
      * Obtains the current contents of a file under recording.
-     * @return the contents of source code
+     * @return the contents of source code, or <code>null</code> if source code does not exist
      */
     protected String getCurrentCode() {
-        return "";
+        return null;
     }
     
     /**
@@ -310,7 +309,7 @@ public class DocMacroRecorder {
         recordMacro(trigger);
         
         for (DiffMacro macro : macros) {
-            System.out.println("** " + macro.toString());
+            // System.out.println("** " + macro.toString());
             recordRawMacro(macro);
             recordMacro(macro);
         }

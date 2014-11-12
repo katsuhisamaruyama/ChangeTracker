@@ -82,10 +82,6 @@ public class DiffMacroGenerator {
         dmp.diff_cleanupEfficiency(diffs);
         List<CodeDelta> deltas = getDeltas(diffs);
         
-        for (CodeDelta delta : deltas) {
-            System.out.println(delta.toString());
-        }
-        
         return deltas;
     }
     

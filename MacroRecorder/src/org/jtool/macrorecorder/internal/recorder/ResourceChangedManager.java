@@ -10,19 +10,16 @@ import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.jtool.macrorecorder.macro.ResourceMacro;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Manages operations related to element changes.
  * @author Katsuhisa Maruyama
  */
-public class JavaElementChangedManager implements IElementChangedListener {
+public class ResourceChangedManager implements IElementChangedListener {
     
     /**
      * A recorder that records menu actions.
@@ -33,7 +30,7 @@ public class JavaElementChangedManager implements IElementChangedListener {
      * Creates an object that records resource change events.
      * @param recorder a recorder that records menu actions
      */
-    public JavaElementChangedManager(MenuMacroRecorder recorder) {
+    public ResourceChangedManager(MenuMacroRecorder recorder) {
         this.recorder = recorder;
     }
     
@@ -41,7 +38,7 @@ public class JavaElementChangedManager implements IElementChangedListener {
      * Registers an element change manager with the Java model.
      * @param em the element change manager
      */
-    public static void register(JavaElementChangedManager em) {
+    public static void register(ResourceChangedManager em) {
         JavaCore.addElementChangedListener(em);
     }
     
@@ -49,7 +46,7 @@ public class JavaElementChangedManager implements IElementChangedListener {
      * Unregisters an element change manager with the Java model.
      * @param em the element change manager
      */
-    public static void unregister(JavaElementChangedManager em) {
+    public static void unregister(ResourceChangedManager em) {
         JavaCore.removeElementChangedListener(em);
     }
     
@@ -98,28 +95,21 @@ public class JavaElementChangedManager implements IElementChangedListener {
      */
     private ResourceMacro createResourceRemovedMacro(long time, IJavaElementDelta delta) {
         IJavaElement elem = delta.getElement();
-        String target = getTarget(elem);
         String path = elem.getPath().toString();
-        String ipath = null;
-        
         if (path == null) {
             return null;
         }
         
-        System.out.println("REMOVED " + path);
-        
         String type = "Removed";
         if ((delta.getFlags() & IJavaElementDelta.F_MOVED_TO) != 0) {
-            ipath = delta.getMovedToElement().getPath().toString();
-            
-            if (isRenamed(delta.getElement(), delta.getMovedToElement(), elem.getElementType())) {
-                type = "Renamed";
+            if (isRenamed(delta.getElement(), delta.getMovedToElement())) {
+                type = "RenamedTo";
             } else {
-                type = "Moved";
+                type = "MovedTo";
             }
         }
         
-        return new ResourceMacro(time, type, path, target, ipath, "");
+        return new ResourceMacro(time, type, path, elem);
     }
     
     /**
@@ -130,29 +120,21 @@ public class JavaElementChangedManager implements IElementChangedListener {
      */
     private ResourceMacro createResourceAddedMacro(long time, IJavaElementDelta delta) {
         IJavaElement elem = delta.getElement();
-        String target = getTarget(elem);
         String path = elem.getPath().toString();
-        String ipath = null;
-        
         if (path == null) {
             return null;
         }
         
-        System.out.println("ADDED " + path);
-        
         String type = "Added";
         if ((delta.getFlags() & IJavaElementDelta.F_MOVED_FROM) != 0) {
-            ipath = delta.getMovedFromElement().getPath().toString();
-            
-            if (isRenamed(delta.getElement(), delta.getMovedToElement(), elem.getElementType())) {
-                type = "Renamed";
+            if (isRenamed(delta.getElement(), delta.getMovedFromElement())) {
+                type = "RenamedFrom";
             } else {
-                type = "Moved";
+                type = "MovedFrom";
             }
         }
         
-        String code = getCode(elem);
-        return new ResourceMacro(time, type, path, target, ipath, code);
+        return new ResourceMacro(time, type, path, elem);
     }
     
     /**
@@ -163,103 +145,36 @@ public class JavaElementChangedManager implements IElementChangedListener {
      */
     private ResourceMacro createResourceChangedMacro(long time, IJavaElementDelta delta) {
         IJavaElement elem = delta.getElement();
-        String target = getTarget(elem);
         String path = elem.getPath().toString();
-        String ipath = null;
-        
         if (path == null) {
             return null;
         }
         
         if ((delta.getFlags() & IJavaElementDelta.F_CONTENT) != 0) {
-            System.out.println("CONTENT CHANGED " + path);
+            // System.out.println("CONTENT CHANGED" + path);
+            return null;
         }
         
-        String code = getCode(elem);
-        return new ResourceMacro(time, "Changed", path, target, ipath, code);
-    }
-    
-    /**
-     * Obtains source code of a resource
-     * @param resource the changed resource 
-     * @return the contents of the source code
-     */
-    private String getCode(IJavaElement elem) {
-        if (elem instanceof ICompilationUnit) {
-            ICompilationUnit cu = (ICompilationUnit)elem;
-            
-            try {
-                return cu.getSource();
-            } catch (JavaModelException e) {
-                e.printStackTrace();
-            }
-        }
-        return "";
+        return new ResourceMacro(time, "Changed", path, elem);
     }
     
     /**
      * Tests if the element was renamed by the change.
      * @param before the element before the change
      * @param after the element after the change
-     * @param type the type of the element
      * @return <code>true</code> if renaming was applied, otherwise <code>false</code>
      */
-    private boolean isRenamed(IJavaElement before, IJavaElement after, int type) {
+    private boolean isRenamed(IJavaElement before, IJavaElement after) {
         if (before == null || after == null) {
             return true;
         }
         
-        String beforen = getElementName(before, type);
-        String aftern = getElementName(after, type);
+        String beforen = ResourceMacro.getName(before);
+        String aftern =  ResourceMacro.getName(after);
         if (beforen.compareTo(aftern) != 0) {
             return true;
         }
         return false;
-    }
-    
-    /**
-     * Obtains the name of the specified element.
-     * @param elem the element
-     * @param type the type of the element
-     * @return the name string
-     */
-    private String getElementName(IJavaElement elem, int type) {
-        if (type == IJavaElement.JAVA_PROJECT) {
-            return elem.getResource().getName();
-            
-        } else if (type == IJavaElement.PACKAGE_FRAGMENT) {
-            IPackageFragment jpackage = (IPackageFragment)elem;
-            return jpackage.getElementName();
-            
-        } else if (type == IJavaElement.COMPILATION_UNIT) {
-            return elem.getResource().getName();
-        }
-        
-        return "";
-    }
-    
-    /**
-     * Returns the target of the change.
-     * @param elem the changed element
-     * @return the target of the change,
-     *         or <code>null</code> if the target is not either a project, package, or file
-     */
-    private String getTarget(IJavaElement elem) {
-        if (elem == null) {
-            return null;
-        }
-        
-        int type = elem.getElementType();
-        if (type == IJavaElement.JAVA_PROJECT) {
-            return "Project";
-            
-        } else if (type == IJavaElement.PACKAGE_FRAGMENT) {
-            return "Package";
-            
-        } else if (type == IJavaElement.COMPILATION_UNIT) {
-            return "File";
-        }
-        return null;
     }
     
     /**

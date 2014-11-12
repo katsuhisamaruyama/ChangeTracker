@@ -17,6 +17,7 @@ import org.jtool.macrorecorder.macro.ResourceMacro;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.text.ITextSelection;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,14 +53,9 @@ public class MenuMacroRecorder {
     private RefactoringExecutionManager refactoringManager;
     
     /**
-     * A manager that records operations related to element changes in the Java model.
+     * A manager that records operations related to resource changes in the Java model.
      */
-    // private JavaElementChangedManager elementChangeManager;
-    
-    /**
-     * A manager that records operations related to resource changes.
-     */
-    // private ResourceChangeManager resourceChangeManager;
+    private ResourceChangedManager resourceChangeManager;
     
     /**
      * A parent macro on which the current recorded macro dangles
@@ -77,8 +73,7 @@ public class MenuMacroRecorder {
     private MenuMacroRecorder() {
         commandManager = new CommandExecutionManager(this);
         refactoringManager = new RefactoringExecutionManager(this);
-        // elementChangeManager = new JavaElementChangedManager(this);
-        // resourceChangeManager = new ResourceChangeManager(this);
+        resourceChangeManager = new ResourceChangedManager(this);
     }
     
     /**
@@ -103,8 +98,7 @@ public class MenuMacroRecorder {
     public void start() {
         CommandExecutionManager.register(commandManager);
         RefactoringExecutionManager.register(refactoringManager);
-        // JavaElementChangedManager.register(elementChangeManager);
-        // ResourceChangeManager.register(resourceChangeManager);
+        ResourceChangedManager.register(resourceChangeManager);
         
         rawMacros.clear();
         compoundMacro = null;
@@ -117,8 +111,7 @@ public class MenuMacroRecorder {
     public void stop() {
         CommandExecutionManager.unregister(commandManager);
         RefactoringExecutionManager.unregister(refactoringManager);
-        // JavaElementChangedManager.unregister(elementChangeManager);
-        // ResourceChangeManager.unregister(resourceChangeManager);
+        ResourceChangedManager.unregister(resourceChangeManager);
         
         rawMacros.clear();
     }
@@ -150,10 +143,17 @@ public class MenuMacroRecorder {
         DocMacroRecorder docMacroRecorder = getDocMacroRecorder(path);
         if (docMacroRecorder != null) {
             docMacroRecorder.recordExecutionMacro(macro);
+            
+            System.out.println("THEN " + macro.toString());
+            
         } else {
             recordRawMacro(macro);
             recordMacro(macro);
+            
+            System.out.println("ELSE " + macro.toString());
         }
+        
+        System.out.println(macro.toString());
     }
     
     /**
@@ -167,6 +167,7 @@ public class MenuMacroRecorder {
         DocMacroRecorder docMacroRecorder = getDocMacroRecorder(path);
         if (docMacroRecorder != null) {
             docMacroRecorder.recordTriggerMacro(macro);
+            
         } else {
             recordRawMacro(macro);
             recordMacro(macro);
@@ -211,7 +212,7 @@ public class MenuMacroRecorder {
         if (macro instanceof TriggerMacro) {
             TriggerMacro tmacro = (TriggerMacro)macro;
             if (compoundMacro == null && tmacro.isBegin()) {
-                compoundMacro = new CompoundMacro(tmacro.getType(), macro.getPath());
+                compoundMacro = new CompoundMacro(tmacro.getStartTime(), tmacro.getType(), macro.getPath());
                 
             } else if (tmacro.isEnd() || tmacro.isCursorChange()) {
                 if (compoundMacro != null) {
