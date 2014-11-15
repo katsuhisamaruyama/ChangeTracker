@@ -144,16 +144,10 @@ public class MenuMacroRecorder {
         if (docMacroRecorder != null) {
             docMacroRecorder.recordExecutionMacro(macro);
             
-            System.out.println("THEN " + macro.toString());
-            
         } else {
             recordRawMacro(macro);
             recordMacro(macro);
-            
-            System.out.println("ELSE " + macro.toString());
         }
-        
-        System.out.println(macro.toString());
     }
     
     /**
