@@ -6,6 +6,7 @@
 
 package org.jtool.changerecorder.editor;
 
+import org.jtool.changerecorder.diff.DiffOperationGenerator;
 import org.jtool.changerecorder.event.OperationEventListener;
 import org.jtool.changerecorder.event.OperationEventSource;
 import org.jtool.changerecorder.history.OperationHistory;
@@ -30,6 +31,7 @@ import org.jtool.macrorecorder.util.WorkspaceUtilities;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorPart;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -55,9 +57,14 @@ public class HistoryManager extends OperationEventSource implements MacroListene
     private Recorder recorder = null;
     
     /**
-     * The new operation that are stored to judge if the next open operation will be firstly applied.
+     * The new operation that exists before the current operation.
      */
-    private IOperation newOperation = null;
+    private FileOperation newOperation = null;
+    
+    /**
+     * The close operation that exists before the current operation.
+     */
+    private FileOperation closeOperation = null;
     
     /**
      * A listener that displays operation on the console.
@@ -146,6 +153,10 @@ public class HistoryManager extends OperationEventSource implements MacroListene
         
         if (op != null) {
             storeOperation(op);
+            
+            newOperation = null;
+            closeOperation = null;
+            
         }
     }
     
@@ -190,12 +201,24 @@ public class HistoryManager extends OperationEventSource implements MacroListene
             NormalOperation nop = new NormalOperation(Time.getCurrentTime(), 0, path, 0, code, "", NormalOperation.Type.EDIT);
             storeOperation(nop);
             
-            newOperation = null;
-            
         } else {
             FileOperation op = new FileOperation(Time.getCurrentTime(), path, FileOperation.Type.OPEN, code);
             storeOperation(op);
         }
+        
+        newOperation = null;
+        closeOperation = null;
+    }
+    
+    /**
+     * Records a file close operation.
+     * @param file the file
+     * @param code the contents of the source code when the operation was performed
+     */
+    void recordFileCloseOperation(IFile file, String code) {
+        String path = file.getFullPath().toString();
+        closeOperation = new FileOperation(Time.getCurrentTime(), path, FileOperation.Type.CLOSE, code);
+        storeOperation(closeOperation);
     }
     
     /**
@@ -287,11 +310,32 @@ public class HistoryManager extends OperationEventSource implements MacroListene
                 storeOperation(newOperation);
                 
             } else if (macro.isRemoved()) {
+                
+                if (closeOperation != null) {
+                    CompoundOperation cop = createDiffOperation(closeOperation.getFilePath(), closeOperation.getCode(), "");
+                    storeOperation(cop);
+                }
+                
                 IOperation op = new FileOperation(Time.getCurrentTime(), macro.getPath(), FileOperation.Type.DELETE, macro.getCode());
                 storeOperation(op);
                 writeHistory(macro.getEncoding());
+                
+                closeOperation = null;
             }
         }
+    }
+    
+    /**
+     * Creates a compound operation that contains normal operations representing respective differences.
+     * @param path the name of the file path on which this operation was performed
+     * @param oldCode the old contents of the file
+     * @param newCode the new contents of the file
+     * @return the created compound operation
+     */
+    private CompoundOperation createDiffOperation(String path, String oldCode, String newCode) {
+        long time = Time.getCurrentTime();
+        List<NormalOperation> ops = DiffOperationGenerator.generate(time, path, oldCode, newCode);
+        return new CompoundOperation(time, ops, "Diff");
     }
     
     /**

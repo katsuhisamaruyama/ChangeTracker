@@ -20,7 +20,7 @@ public class CompoundOperation extends AbstractOperation {
     /**
      * The array list of operations contained in this operation.
      */
-    private List<IOperation> operations = new ArrayList<IOperation>();
+    private List<? extends IOperation> operations = new ArrayList<IOperation>();
     
     /**
      * The label indicating the name of this operation.
@@ -34,7 +34,7 @@ public class CompoundOperation extends AbstractOperation {
      * @param ops the operations contained in this operation
      * @param label the label indicating the name of the undo operation
      */
-    public CompoundOperation(long time, String author, List<IOperation> ops, String label) {
+    public CompoundOperation(long time, String author, List<? extends IOperation> ops, String label) {
         super(time, "", author);
         this.operations = ops;
         this.label = label;
@@ -46,7 +46,7 @@ public class CompoundOperation extends AbstractOperation {
      * @param ops the operations contained in this operation
      * @param label the label indicating the name of the undo operation
      */
-    public CompoundOperation(long time, List<IOperation> ops, String label) {
+    public CompoundOperation(long time, List<? extends IOperation> ops, String label) {
         this(time, AbstractOperation.getUserName(), ops, label);
     }
     
@@ -54,7 +54,7 @@ public class CompoundOperation extends AbstractOperation {
      * Returns the array of operations contained in this operation.
      * @return the contained operations
      */
-    public List<IOperation> getOperations() {
+    public List<? extends IOperation> getOperations() {
         return operations;
     }
     
@@ -70,7 +70,7 @@ public class CompoundOperation extends AbstractOperation {
      * Returns the array list of operations dangling on this operation.
      * @return the dangling editing operations
      */
-    public List<IOperation> getLeaves() {
+    public List<? extends IOperation> getLeaves() {
         List<IOperation> leaves = new ArrayList<IOperation>();
         for (IOperation op : operations) {
             if (op.getOperationType() == IOperation.Type.COMPOUND) {

@@ -106,7 +106,7 @@ public class JCompilationUnitEditor extends CompilationUnitEditor {
         if (historyManager != null) {
             historyManager.stop(this);
             
-            historyManager.recordFileOperation(getInputFile(), getSourceCode(), FileOperation.Type.CLOSE, true);
+            historyManager.recordFileCloseOperation(getInputFile(), getSourceCode());
             historyManager.writeHistory(getInputFile());
             historyManager = null;
         }
