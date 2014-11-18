@@ -159,7 +159,6 @@ public class DocMacroRecorder {
         dumpMacros(macro);
         
         if (macro.isRemoved()) {
-            System.out.println("DELETE RECORDER");
             Recorder.removeDocRecorder(macro.getPath());
         }
     }
