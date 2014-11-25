@@ -12,14 +12,12 @@ import org.jtool.changerecorder.operation.FileOperation;
 import org.jtool.changerecorder.operation.IOperation;
 import org.jtool.changerecorder.operation.MenuOperation;
 import org.jtool.changerecorder.operation.NormalOperation;
-import org.jtool.changerecorder.operation.ResourceOperation;
 import org.jtool.changerecorder.util.StringComparator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -27,29 +25,30 @@ import java.util.ArrayList;
  * Converts the XML representation into the operation history.
  * @author Katsuhisa Maruyama
  */
-public class Xml2Operation {
+public class Xml2OperationOR {
     
     /**
-     * Converts the XML representation of the operation history into the Java object representation.
-     * @param doc the content of the DOM instance
-     * @return the operation history after the conversion
+     * The additional element names, attribute names, and values.
      */
-    public static OperationHistory convert(Document doc) {
-        NodeList list = doc.getElementsByTagName(XmlConstantStrings.OperationHistoryElem);
-        if (list.getLength() <= 0) {
-            System.err.print("invalid operation history format");
-            return null;
-        }
-        
-        Element top = (Element)list.item(0);
-        String version = top.getAttribute(XmlConstantStrings.VersionAttr);
-        
-        if (version.endsWith("a")) {
-            return getOperations(doc);
-        } else {
-            return Xml2OperationOR.getOperations(doc);
-        }
-    }
+    private static final String DeveloperElem = "developer";
+    private static final String FileElem = "file";
+    private static final String SourceCodeElem = "sourceCode";
+    private static final String CompoundedOperationElem = "compoundedOperations";
+    private static final String CCPAttr = "ccp";
+    private static final String CCPTypeAttr = "cptype";
+    private static final String TypeAttr = "type";
+    private static final String NoneValue = "NONE";
+    private static final String NoValue = "NO";
+    
+    /**
+     * The name of a developer who performed an operation.
+     */
+    private static String developer = "";
+    
+    /**
+     * The path of a file on which an operation was performed.
+     */
+    private static String path = "";
     
     /**
      * Obtains the operations from the DOM element.
@@ -57,10 +56,18 @@ public class Xml2Operation {
      * @return the operation history after the conversion
      */
     public static OperationHistory getOperations(Document doc) {
-        NodeList list = doc.getElementsByTagName(XmlConstantStrings.OperationHistoryElem);
-        if (list.getLength() <= 0) {
-            System.err.print("invalid operation history format");
-            return null;
+        NodeList developers = doc.getElementsByTagName(DeveloperElem);
+        if (developers == null) {
+            developer = "Unknown";
+        } else {
+            developer = getFirstChildText(developers);
+        }
+        
+        NodeList paths = doc.getElementsByTagName(FileElem);
+        if (paths == null) {
+            path = "Unknown";
+        } else {
+            path = getFirstChildText(paths);
         }
         
         NodeList operationList = doc.getElementsByTagName(XmlConstantStrings.OperationsElem);
@@ -84,9 +91,35 @@ public class Xml2Operation {
                 }
             }
         }
-        
-        OperationHistory history = new OperationHistory(ops);
+        OperationHistory history = new OperationHistory(addOperations(ops));
         return history;
+    }
+    
+    /**
+     * Adds a file new operation and a normal edit operation before the first file open operation.
+     * @param ops the collection of operations.
+     * @return the collection of operations containing the added operations
+     */
+    private static List<IOperation> addOperations(List<IOperation> ops) {
+        List<IOperation> newOps = new ArrayList<IOperation>();
+        for (int i = 0; i < ops.size(); i++) {
+            IOperation op = ops.get(i);
+            
+            if (op.getOperationType() == IOperation.Type.FILE) {
+                FileOperation fop = (FileOperation)op;
+                
+                if (fop.getActionType() == FileOperation.Type.OPEN) {
+                    newOps.add(new FileOperation(fop.getTime(), 
+                            fop.getFilePath(), fop.getAuthor(), FileOperation.Type.NEW, ""));
+                    
+                    newOps.add(new NormalOperation(fop.getTime(), 0,
+                            fop.getFilePath(), fop.getAuthor(), 0, fop.getCode(), "", NormalOperation.Type.EDIT));
+                }
+            }
+            newOps.add(op);
+        }
+        
+        return newOps;
     }
     
     /**
@@ -99,7 +132,8 @@ public class Xml2Operation {
         if (StringComparator.isSame(elem.getNodeName(), XmlConstantStrings.NormalOperationElem)) {
             return getNormalOperation(elem);
             
-        } else if (StringComparator.isSame(elem.getNodeName(), XmlConstantStrings.CompoundOperationElem)) {
+        } else if (StringComparator.isSame(elem.getNodeName(), XmlConstantStrings.CompoundOperationElem) ||
+                   StringComparator.isSame(elem.getNodeName(), CompoundedOperationElem)) {
             return getCompoundOperation(elem);
             
         } else if (StringComparator.isSame(elem.getNodeName(), XmlConstantStrings.FileOperationElem)) {
@@ -110,9 +144,6 @@ public class Xml2Operation {
             
         } else if (StringComparator.isSame(elem.getNodeName(), XmlConstantStrings.CopyOperationElem)) {
             return getCopyOperation(elem);
-            
-        } else if (StringComparator.isSame(elem.getNodeName(), XmlConstantStrings.ResourceOperationElem)) {
-            return getResourceOperation(elem);
         }
         return null;
     }
@@ -125,10 +156,22 @@ public class Xml2Operation {
     private static NormalOperation getNormalOperation(Element elem) {
         String time = elem.getAttribute(XmlConstantStrings.TimeAttr);
         String seq = elem.getAttribute(XmlConstantStrings.SeqAttr);
+        if (seq.length() == 0) {
+            seq = "0";
+        }
         String offset = elem.getAttribute(XmlConstantStrings.OffsetAttr);
         String file = elem.getAttribute(XmlConstantStrings.FileAttr);
-        String action = elem.getAttribute(XmlConstantStrings.ActionAttr);
-        String author = elem.getAttribute(XmlConstantStrings.AuthorAttr);
+        if (file.length() == 0) {
+            file = path;
+        }
+        String author = developer;
+        String action = elem.getAttribute(CCPTypeAttr);
+        if (action.length() == 0) {
+            action = elem.getAttribute(CCPAttr);
+        }
+        if (action.compareTo(NoneValue) == 0) {
+            action = NoValue;
+        }
         
         String insText = getFirstChildText(elem.getElementsByTagName(XmlConstantStrings.InsertedElem));
         String delText = getFirstChildText(elem.getElementsByTagName(XmlConstantStrings.DeletedElem));
@@ -148,14 +191,23 @@ public class Xml2Operation {
         String time = elem.getAttribute(XmlConstantStrings.TimeAttr);
         String label = elem.getAttribute(XmlConstantStrings.LabelAttr);
         
+        long time0 = 0;
+        if (time.length() != 0) {
+            time0 = Long.parseLong(time);
+        }
+        
         NodeList childList = elem.getChildNodes();
         for (int i = 0; i < childList.getLength(); i++) {
             if (childList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                ops.add(getOperation((Element)childList.item(i)));
+                IOperation op = getOperation((Element)childList.item(i));
+                ops.add(op);
+                if (time0 == 0) {
+                    time0 = op.getTime();
+                }
             }
         }
         
-        CompoundOperation op = new CompoundOperation(Long.parseLong(time), ops, label);
+        CompoundOperation op = new CompoundOperation(time0, ops, label);
         return op;
     }
     
@@ -168,7 +220,10 @@ public class Xml2Operation {
         String time = elem.getAttribute(XmlConstantStrings.TimeAttr);
         String offset = elem.getAttribute(XmlConstantStrings.OffsetAttr);
         String file = elem.getAttribute(XmlConstantStrings.FileAttr);
-        String author = elem.getAttribute(XmlConstantStrings.AuthorAttr);
+        if (file.length() == 0) {
+            file = path;
+        }
+        String author = developer;
         
         String copiedText = getFirstChildText(elem.getElementsByTagName(XmlConstantStrings.CopiedElem));
         
@@ -185,12 +240,18 @@ public class Xml2Operation {
     private static FileOperation getFileOperations(Element elem) {
         String time = elem.getAttribute(XmlConstantStrings.TimeAttr);
         String file = elem.getAttribute(XmlConstantStrings.FileAttr);
-        String action = elem.getAttribute(XmlConstantStrings.ActionAttr);
-        String author = elem.getAttribute(XmlConstantStrings.AuthorAttr);
+        if (file.length() == 0) {
+            file = path;
+        }
+        String action = elem.getAttribute(TypeAttr);
+        String author = developer;
         
         String code = getFirstChildText(elem.getElementsByTagName(XmlConstantStrings.CodeElem));
         if (code == null) {
-            code = "";
+            code = getFirstChildText(elem.getElementsByTagName(SourceCodeElem));
+            if (code == null) {
+                code = "";
+            }
         }
         
         FileOperation op = new FileOperation(Long.parseLong(time),
@@ -206,30 +267,13 @@ public class Xml2Operation {
     private static MenuOperation getMenuOperation(Element elem) {
         String time = elem.getAttribute(XmlConstantStrings.TimeAttr);
         String file = elem.getAttribute(XmlConstantStrings.FileAttr);
+        if (file.length() == 0) {
+            file = path;
+        }
         String label = elem.getAttribute(XmlConstantStrings.LabelAttr);
-        String author = elem.getAttribute(XmlConstantStrings.AuthorAttr);
+        String author = developer;
         
         MenuOperation op = new MenuOperation(Long.parseLong(time), file, author, label);
-        return op;
-    }
-    
-    /**
-     * Creates the resource change operation from the DOM element.
-     * @param elem the DOM element
-     * @return the created operation
-     */
-    private static IOperation getResourceOperation(Element elem) {
-        String time = elem.getAttribute(XmlConstantStrings.TimeAttr);
-        String file = elem.getAttribute(XmlConstantStrings.FileAttr);
-        String action = elem.getAttribute(XmlConstantStrings.ActionAttr);
-        String target = elem.getAttribute(XmlConstantStrings.TargetAttr);
-        String apath = elem.getAttribute(XmlConstantStrings.APathAttr);
-        String author = elem.getAttribute(XmlConstantStrings.AuthorAttr);
-        
-        ResourceOperation.Type actionValue = ResourceOperation.Type.parseType(action);
-        ResourceOperation.Target targetValue = ResourceOperation.Target.parseType(target);
-        ResourceOperation op = new ResourceOperation(Long.parseLong(time),
-            file, author, actionValue, targetValue, apath);
         return op;
     }
     

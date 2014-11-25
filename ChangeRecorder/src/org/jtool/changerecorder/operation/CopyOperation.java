@@ -102,7 +102,7 @@ public class CopyOperation extends AbstractOperation {
         buf.append(" author=[" + author + "]");
         buf.append(" path=" + path + "]");
         buf.append(" offset=" + start);
-        buf.append(" copied=[" + getText(copiedText) + "]\n");
+        buf.append(" copied=[" + getText(copiedText) + "]");
         
         return buf.toString();
     }

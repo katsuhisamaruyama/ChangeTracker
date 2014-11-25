@@ -304,9 +304,6 @@ public class HistoryManager extends OperationEventSource implements MacroListene
      * @return the created operation
      */
     private void createOperation(ResourceMacro macro) {
-        System.out.println("MACRO " + macro.getPath() + " " + macro.getType() + " " + macro.getTarget());
-        
-        
         if (macro.getTarget().compareTo("File") == 0) {
             
             if (macro.isAdded()) {
