@@ -155,10 +155,10 @@ public class ResourceMacro extends Macro {
         if (type == IJavaElement.JAVA_PROJECT) {
             return "Project";
             
-        } else if (type == IJavaElement.PACKAGE_DECLARATION) {
+        } else if (type == IJavaElement.PACKAGE_FRAGMENT) {
             return "Package";
             
-        } else if (type == IJavaElement.COMPILATION_UNIT) {
+        } else if (type == IJavaElement.COMPILATION_UNIT || type == IJavaElement.PACKAGE_DECLARATION) {
             return "File";
         }
         
@@ -230,11 +230,11 @@ public class ResourceMacro extends Macro {
         if (type == IJavaElement.JAVA_PROJECT) {
             return elem.getResource().getName();
             
-        } else if (type == IJavaElement.PACKAGE_DECLARATION) {
+        } else if (type == IJavaElement.PACKAGE_FRAGMENT) {
             IPackageFragment jpackage = (IPackageFragment)elem;
             return jpackage.getElementName();
             
-        } else if (type == IJavaElement.COMPILATION_UNIT) {
+        } else if (type == IJavaElement.COMPILATION_UNIT || type == IJavaElement.PACKAGE_DECLARATION) {
             return elem.getResource().getName();
         }
         
