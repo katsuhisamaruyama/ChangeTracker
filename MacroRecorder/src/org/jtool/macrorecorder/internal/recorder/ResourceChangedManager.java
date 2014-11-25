@@ -144,18 +144,7 @@ public class ResourceChangedManager implements IElementChangedListener {
      * @return the created resource macro
      */
     private ResourceMacro createResourceChangedMacro(long time, IJavaElementDelta delta) {
-        IJavaElement elem = delta.getElement();
-        String path = elem.getPath().toString();
-        if (path == null) {
-            return null;
-        }
-        
-        if ((delta.getFlags() & IJavaElementDelta.F_CONTENT) != 0) {
-            // System.out.println("CONTENT CHANGED" + path);
-            return null;
-        }
-        
-        return new ResourceMacro(time, "Changed", path, elem);
+        return null;
     }
     
     /**
@@ -201,13 +190,16 @@ public class ResourceChangedManager implements IElementChangedListener {
          * @param deltas the collection of the deltas to be collected
          */
         private void collectDeltas(IJavaElementDelta delta) {
+            
+            System.out.println(delta.toString());
+            
             if (delta.getKind() == IJavaElementDelta.ADDED ||
                 delta.getKind() == IJavaElementDelta.REMOVED) {
                 if (!contain(delta)) {
                     deltas.add(delta);
                 }
             } else if (delta.getKind() == IJavaElementDelta.CHANGED &&
-                    ((delta.getFlags() & IJavaElementDelta.F_CONTENT) != 0)) {
+                      (delta.getFlags() & IJavaElementDelta.F_CONTENT) == 0) {
                 if (!contain(delta)) {
                     deltas.add(delta);
                 }
