@@ -31,7 +31,6 @@ import org.jtool.macrorecorder.util.WorkspaceUtilities;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorPart;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -109,6 +108,8 @@ public class HistoryManager extends OperationEventSource implements MacroListene
      * Stops recording of operations.
      */
     public void stop() {
+        writeHistory();
+        
         if (recorder != null) {
             recorder.removeMacroListener(this);
             removeOperationEventListener(consoleOperationListener);
@@ -166,7 +167,7 @@ public class HistoryManager extends OperationEventSource implements MacroListene
      */
     @Override
     public void documentChanged(MacroEvent evt) {
-        // System.out.println("!MACRO: " + evt.getMacro());
+        // System.out.println(evt.getMacro().toString());
     }
     
     /**
@@ -303,11 +304,16 @@ public class HistoryManager extends OperationEventSource implements MacroListene
      * @return the created operation
      */
     private void createOperation(ResourceMacro macro) {
+        System.out.println("MACRO " + macro.getPath() + " " + macro.getType() + " " + macro.getTarget());
+        
+        
         if (macro.getTarget().compareTo("File") == 0) {
             
             if (macro.isAdded()) {
-                newOperation = new FileOperation(macro.getStartTime(), macro.getPath(), FileOperation.Type.NEW, "");
-                storeOperation(newOperation);
+                if (newOperation == null) {
+                    newOperation = new FileOperation(macro.getStartTime(), macro.getPath(), FileOperation.Type.NEW, "");
+                    storeOperation(newOperation);
+                }
                 
             } else if (macro.isRemoved()) {
                 
@@ -318,7 +324,7 @@ public class HistoryManager extends OperationEventSource implements MacroListene
                 
                 IOperation op = new FileOperation(Time.getCurrentTime(), macro.getPath(), FileOperation.Type.DELETE, macro.getCode());
                 storeOperation(op);
-                writeHistory(macro.getEncoding());
+                writeHistory(macro.getPath(), macro.getEncoding());
                 
                 closeOperation = null;
             }
@@ -351,19 +357,41 @@ public class HistoryManager extends OperationEventSource implements MacroListene
         } catch (CoreException e) {
         }
         
-        writeHistory(encoding);
+        writeHistory(file.getFullPath().toString(), encoding);
+    }
+    
+    /**
+     * Writes the operation history not related to a specific file.
+     */
+    void writeHistory() {
+        writeHistory(history, WorkspaceUtilities.getEncoding());
     }
     
     /**
      * Writes the operation history related to a file.
+     * @param path the path of the file
      * @param encoding the encoding of the file
      */
-    void writeHistory(String encoding) {
-        if (!toBeWritten(history)) {
+    private void writeHistory(String path, String encoding) {
+        OperationHistory fhistory = history.extractHistory(path);
+        if (encoding == null) {
+            encoding = WorkspaceUtilities.getEncoding();
+        }
+        
+        writeHistory(fhistory, encoding);
+    }
+    
+    /**
+     * Writes the operation history related to a file.
+     * @param path the path of the file
+     * @param encoding the encoding of the file
+     */
+    private void writeHistory(OperationHistory fhistory, String encoding) {
+        if (!toBeWritten(fhistory)) {
             return;
         }
         
-        history.sort();
+        fhistory.sort();
         
         if (encoding == null) {
             encoding = WorkspaceUtilities.getEncoding();
@@ -372,10 +400,8 @@ public class HistoryManager extends OperationEventSource implements MacroListene
         String dpath = OperationHistory.getOperationHistoryDirPath();
         String wpath = dpath + '/' + String.valueOf(Time.getCurrentTime()) + ".xml";
         
-        history.write(wpath, encoding);
+        fhistory.write(wpath, encoding);
         // System.out.println(history.toString());
-        
-        history.clear();
     }
     
     /**
@@ -417,6 +443,10 @@ public class HistoryManager extends OperationEventSource implements MacroListene
             if (op.isTextEditOperation()) {
                 return true;
             }
+        }
+        
+        if (fop1.getFilePath().compareTo(fop2.getFilePath()) != 0) {
+            return true;
         }
         
         return false;

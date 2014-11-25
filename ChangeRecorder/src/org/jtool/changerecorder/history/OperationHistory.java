@@ -107,6 +107,18 @@ public class OperationHistory {
     }
     
     /**
+     * Extracts operations in this operation history and removes the extracted ones, which are related to a specified file.
+     * @param path the path of the specified file
+     * @return the operation history storing the found operations.
+     * The size of the history is zero if no operations was found
+     */
+    public OperationHistory extractHistory(String path) {
+        OperationHistory history = getHistory(path);
+        remove(path);
+        return history;
+    }
+    
+    /**
      * Removes operations related to a specified file from this operation history.
      * @param path the path of the specified file,
      * or <code>null</code> if operations not having a relation to any file are removed

@@ -8,7 +8,6 @@ package org.jtool.changerecorder.editor;
 
 import org.jtool.changerecorder.operation.FileOperation;
 import org.jtool.changerecorder.operation.IOperation;
-import org.jtool.macrorecorder.recorder.MacroEvent;
 import org.jtool.macrorecorder.util.EditorUtilities;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -144,30 +143,5 @@ public class JCompilationUnitEditor extends CompilationUnitEditor {
      */
     public String getSourceCode() {
         return EditorUtilities.getSourceCode(this);
-    }
-    
-    /**
-     * Receives a macro event when a new macro is added.
-     * @param evt the macro event
-     */
-    public void macroAdded(MacroEvent evt) {
-        /*
-        Macro macro = evt.getMacro();
-        System.out.println(macro.toString());
-        if (macro instanceof CompoundMacro) {
-            CompoundMacro cmacro = (CompoundMacro)macro;
-            for (Macro m : cmacro.getMacros()) {
-                System.out.println(" " + m.toString());
-            }
-        }
-        */
-    }
-    
-    /**
-     * Receives a macro event when a document is changed.
-     * @param evt the raw macro event
-     */
-    public void documentChanged(MacroEvent evt) {
-        // System.out.println("!MACRO: " + evt.getMacro());
     }
 }
