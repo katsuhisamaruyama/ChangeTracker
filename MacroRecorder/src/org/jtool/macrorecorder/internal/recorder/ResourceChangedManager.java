@@ -190,9 +190,6 @@ public class ResourceChangedManager implements IElementChangedListener {
          * @param deltas the collection of the deltas to be collected
          */
         private void collectDeltas(IJavaElementDelta delta) {
-            
-            System.out.println(delta.toString());
-            
             if (delta.getKind() == IJavaElementDelta.ADDED ||
                 delta.getKind() == IJavaElementDelta.REMOVED) {
                 if (!contain(delta)) {
