@@ -7,6 +7,7 @@
 package org.jtool.changerepository.operation;
 
 import org.jtool.changerecorder.operation.NormalOperation;
+
 import java.util.List;
 import java.util.ArrayList;
 

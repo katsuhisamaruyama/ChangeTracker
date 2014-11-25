@@ -89,7 +89,7 @@ public class UnifiedOperation {
             
         } else if (op.getOperationType() == IOperation.Type.FILE) {
             FileOperation fop = (FileOperation)op;
-            if (fop.getActionType() == FileOperation.Type.NEW||
+            if (fop.getActionType() == FileOperation.Type.NEW ||
                 fop.getActionType() == FileOperation.Type.OPEN ||
                 fop.getActionType() == FileOperation.Type.CLOSE ||
                 fop.getActionType() == FileOperation.Type.DELETE) {
