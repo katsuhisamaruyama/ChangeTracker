@@ -195,11 +195,11 @@ public class HistoryManager extends OperationEventSource implements MacroListene
         String path = file.getFullPath().toString();
         
         if (newOperation != null) {
-            FileOperation op = new FileOperation(Time.getCurrentTime(), path, FileOperation.Type.OPEN, "");
-            storeOperation(op);
-            
             NormalOperation nop = new NormalOperation(Time.getCurrentTime(), 0, path, 0, code, "", NormalOperation.Type.EDIT);
             storeOperation(nop);
+            
+            FileOperation op = new FileOperation(Time.getCurrentTime(), path, FileOperation.Type.OPEN, code);
+            storeOperation(op);
             
         } else {
             FileOperation op = new FileOperation(Time.getCurrentTime(), path, FileOperation.Type.OPEN, code);
