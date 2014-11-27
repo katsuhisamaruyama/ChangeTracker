@@ -140,41 +140,48 @@ public class OpJavaElement {
     }
     
     /**
-     * Tests if the offset value is in the range of this Java element.
-     * @param offset the offset value to be checked
-     * @return always <code>false</code>
+     * Obtains the ranges that are corresponds to this Java element, not including the excluded code.
+     * @return the collection of the ranges
      */
-    public boolean inRangeForInsertion(int offset) {
-        if (!range.inRangeMore(offset)) {
-            return false;
+    public List<CodeRange> getRanges() {
+        int len = range.getEnd() - range.getStart() + 1;
+        boolean code[] = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            code[i] = true;
         }
         
         for (CodeRange r : excludedRanges) {
-            if (r.inRangeMore(offset)) {
-                return false;
+            for (int j = r.getStart(); j <= r.getStart() + r.getEnd(); j++) {
+                if (range.inRange(j)) {
+                    code[j - range.getStart()] = false;
+                }
             }
         }
         
-        return true;
-    }
-    
-    /**
-     * Tests if the offset value is in the range of this Java element.
-     * @param offset the offset value to be checked
-     * @return always <code>false</code>
-     */
-    public boolean inRangeForDeletion(int offset) {
-        if (!range.inRange(offset)) {
-            return false;
-        }
-        
-        for (CodeRange r : excludedRanges) {
-            if (r.inRange(offset)) {
-                return false;
+        List<CodeRange> ranges = new ArrayList<CodeRange>();
+        int start = -1;
+        int end = -1;
+        for (int i = 0; i < len; i++) {
+            if (code[i]) {
+                if (start < 0) {
+                    start = i;
+                } else {
+                    end = i;
+                    if (i == len - 1) {
+                        ranges.add(new CodeRange(start, end));
+                    }
+                }
+            } else {
+                if (start >= 0) {
+                    end = i - 1;
+                    ranges.add(new CodeRange(start, end));
+                    
+                    start = -1;
+                    end = -1;
+                }
             }
         }
-        
-        return true;
+        return ranges;
     }
     
     /**
