@@ -173,8 +173,8 @@ public class FileInfo extends RepositoryElementInfo {
     }
     
     /**
-     * Restores source code at the specified time and returns it.
-     * @param idx the sequence number of the specified operation indicating the time
+     * Restores source code when an operation with a given sequence number was performed and returns it.
+     * @param idx the sequence number of the specified operation
      * @return the content of the restored source code, or the error message that will be displayed on the editor
      */
     public String getCode(int idx) {
