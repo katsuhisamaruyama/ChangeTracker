@@ -185,6 +185,8 @@ public class OpJavaVisitor extends ASTVisitor {
         OpMethod method = new OpMethod(start, end, finfo, name);
         elements.add(method);
         
+        System.out.println("METHOD = "  + start + " - " + end);
+        
         if (parents.size() > 0) {
             OpJavaElement parent = (OpJavaElement)parents.peek();
             parent.addJavaElement(method);

@@ -211,6 +211,21 @@ public class FileOpDepGraph {
     }
     
     /**
+     * Returns edges with a given sort. 
+     * @param sort the sort of the edges to be extracted
+     * @return the collection of the extracted edges
+     */
+    private List<OpDepGraphEdge> extractEdges(OpDepGraphEdge.Sort sort) {
+        List<OpDepGraphEdge> es = new ArrayList<OpDepGraphEdge>();
+        for (OpDepGraphEdge edge : edges) {
+            if (sort == edge.getSort()) {
+                es.add(edge);
+            }
+        }
+        return es;
+    }
+    
+    /**
      * Sets the time when the file information was last generated or modified
      * @param time the last generated or modified time of this file information
      */
@@ -273,6 +288,22 @@ public class FileOpDepGraph {
         
         return buf.toString();
     }
+    
+    /**
+     * Returns the string for printing.
+     * @return the string for printing
+     */
+    public String toStringSimple() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("-- Graph " + getFileInfo().getName());
+        buf.append(" Nodes(" + nodes.size() + ")");
+        buf.append(" Edges(" + edges.size() + ")");
+        buf.append("\n");
+        buf.append("  Normal Edges(" + extractEdges(OpDepGraphEdge.Sort.NORMAL).size() + " ");
+        buf.append("  CCP Edges(" + extractEdges(OpDepGraphEdge.Sort.CPP).size() + ")\n");
+        return buf.toString();
+    }
+    
     
     /**
      * Stores the string into the buffer for printing nodes. 

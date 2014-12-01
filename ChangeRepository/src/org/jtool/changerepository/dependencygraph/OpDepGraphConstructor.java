@@ -161,7 +161,7 @@ public class OpDepGraphConstructor {
             
             if (n != null) {
                 if (node.dependsOn(n)) {
-                    fgraph.add(new OpDepGraphEdge(n, node));
+                    fgraph.add(new OpDepGraphEdge(n, node, OpDepGraphEdge.Sort.NORMAL));
                 } else {
                     node.adjustOffsetsBackward(n);
                 }
@@ -241,7 +241,7 @@ public class OpDepGraphConstructor {
                             OpDepGraphNode dst = pgraph.getOperationNode(dstop);
                             if (src != null && dst != null) {
                                 
-                                OpDepGraphEdge edge = new OpDepGraphEdge(src, dst);
+                                OpDepGraphEdge edge = new OpDepGraphEdge(src, dst, OpDepGraphEdge.Sort.CPP);
                                 if (!pgraph.contains(edge)) {
                                     pgraph.add(edge);
                                 }
