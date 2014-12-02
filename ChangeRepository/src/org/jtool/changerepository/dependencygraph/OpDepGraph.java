@@ -9,6 +9,7 @@ package org.jtool.changerepository.dependencygraph;
 import org.jtool.changerepository.data.FileInfo;
 import org.jtool.changerepository.data.ProjectInfo;
 import org.jtool.changerepository.operation.UnifiedOperation;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -241,6 +242,20 @@ public class OpDepGraph {
     }
     
     /**
+     * Returns the string for printing.
+     * @return the string for printing
+     */
+    public String toStringSimple() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("-- Graph " + getProjectInfo().getName());
+        buf.append(" N=" + getAllNodes().size());
+        buf.append(" E=" + getAllEdges().size());
+        buf.append("(" + OpDepGraph.extractEdges(getAllEdges(), OpDepGraphEdge.Sort.NORMAL).size() + ")");
+        buf.append("(" + OpDepGraph.extractEdges(getAllEdges(), OpDepGraphEdge.Sort.CPP).size() + ")");
+        return buf.toString();
+    }
+    
+    /**
      * Stores the string into the buffer for printing nodes. 
      * @param buf the string buffer
      */
@@ -275,6 +290,25 @@ public class OpDepGraph {
             buf.append(edge.toString());
             buf.append("\n");
         }
+    }
+    
+    /**
+     * Returns edges with a given sort.
+     * @param edges the collection of edges
+     * @param sort the sort of the edges to be extracted
+     * @return the collection of the extracted edges
+     */
+    public static List<OpDepGraphEdge> extractEdges(Set<OpDepGraphEdge> edges, OpDepGraphEdge.Sort sort) {
+        List<OpDepGraphEdge> es = new ArrayList<OpDepGraphEdge>();
+        for (OpDepGraphEdge edge : edges) {
+            if (sort == edge.getSort()) {
+                es.add(edge);
+            }
+        }
+        sortEdgesByDstId(es);
+        sortEdgesBySrcId(es);
+        
+        return es;
     }
     
     /**

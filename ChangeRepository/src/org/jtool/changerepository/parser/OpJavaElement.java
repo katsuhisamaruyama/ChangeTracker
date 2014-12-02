@@ -7,6 +7,7 @@
 package org.jtool.changerepository.parser;
 
 import org.jtool.changerepository.data.FileInfo;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +33,11 @@ public class OpJavaElement {
      * The code range that stores two offset values of the start and end points on the source code for this member.
      */
     protected CodeRange range;
+    
+    /**
+     * The collection of ranges that indicate where this Java element exists.
+     */
+    private List<CodeRange> ranges = null;
     
     /**
      * The code ranges of code fragments that are not included in the whole code range.
@@ -107,7 +113,6 @@ public class OpJavaElement {
         return "";
     }
     
-    
     /**
      * Adds the code range that indicates exclusion of a code fragment
      * @param start the start point of the excluded code range 
@@ -140,10 +145,20 @@ public class OpJavaElement {
     }
     
     /**
-     * Obtains the ranges that are corresponds to this Java element, not including the excluded code.
+     * Returns the ranges that correspond to this Java element, not including the excluded code.
      * @return the collection of the ranges
      */
     public List<CodeRange> getRanges() {
+        if (ranges != null) {
+            return ranges;
+        }
+        
+        ranges = new ArrayList<CodeRange>();
+        if (excludedRanges.size() == 0) {
+            ranges.add(new CodeRange(range.getStart(), range.getEnd()));
+            return ranges;
+        }
+        
         int len = range.getEnd() - range.getStart() + 1;
         boolean code[] = new boolean[len];
         for (int i = 0; i < len; i++) {
@@ -151,36 +166,41 @@ public class OpJavaElement {
         }
         
         for (CodeRange r : excludedRanges) {
-            for (int j = r.getStart(); j <= r.getStart() + r.getEnd(); j++) {
+            for (int j = r.getStart(); j <= r.getEnd(); j++) {
                 if (range.inRange(j)) {
                     code[j - range.getStart()] = false;
                 }
             }
         }
         
-        List<CodeRange> ranges = new ArrayList<CodeRange>();
         int start = -1;
         int end = -1;
         for (int i = 0; i < len; i++) {
             if (code[i]) {
                 if (start < 0) {
                     start = i;
+                    if (i == len - 1) {
+                        ranges.add(new CodeRange(start + range.getStart(), start + range.getStart()));
+                    }
+                    
                 } else {
                     end = i;
                     if (i == len - 1) {
-                        ranges.add(new CodeRange(start, end));
+                        ranges.add(new CodeRange(start + range.getStart(), end + range.getStart()));
                     }
                 }
+                
             } else {
                 if (start >= 0) {
                     end = i - 1;
-                    ranges.add(new CodeRange(start, end));
+                    ranges.add(new CodeRange(start + range.getStart(), end + range.getStart()));
                     
                     start = -1;
                     end = -1;
                 }
             }
         }
+        
         return ranges;
     }
     

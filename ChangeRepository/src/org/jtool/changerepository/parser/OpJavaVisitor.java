@@ -68,6 +68,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * @param node the type node of the AST
      * @return always <code>true</code> to visit its child nodes next
      */
+    @Override
     public boolean visit(TypeDeclaration node) {
         int start = node.getStartPosition();
         int end = start + node.getLength() - 1;
@@ -90,6 +91,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * Discards the visited class.
      * @param node the visited node
      */
+    @Override
     public void endVisit(TypeDeclaration node) {
         classes.pop();
         parents.pop();
@@ -100,6 +102,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * @param node the enum node of the AST
      * @return always <code>true</code> to visit its child nodes next
      */
+    @Override
     public boolean visit(EnumDeclaration node) {
         int start = node.getStartPosition();
         int end = start + node.getLength() - 1;
@@ -122,6 +125,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * Discards the visited enum.
      * @param node the visited node
      */
+    @Override
     public void endVisit(EnumDeclaration node) {
         classes.pop();
         parents.pop();
@@ -132,6 +136,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * @param node the type node of the AST
      * @return always <code>true</code> to visit its child nodes next
      */
+    @Override
     public boolean visit(AnonymousClassDeclaration node) {
         int start = node.getStartPosition();
         int end = start + node.getLength() - 1;
@@ -153,6 +158,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * Discards the visited class.
      * @param node the visited node
      */
+    @Override
     public void endVisit(AnonymousClassDeclaration node) {
         classes.pop();
         parents.pop();
@@ -176,6 +182,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * @param node the method node of the AST
      * @return always <code>true</code> to visit its child nodes next
      */
+    @Override
     public boolean visit(MethodDeclaration node) {
         int start = node.getStartPosition();
         int end = start + node.getLength() - 1;
@@ -184,8 +191,6 @@ public class OpJavaVisitor extends ASTVisitor {
         
         OpMethod method = new OpMethod(start, end, finfo, name);
         elements.add(method);
-        
-        System.out.println("METHOD = "  + start + " - " + end);
         
         if (parents.size() > 0) {
             OpJavaElement parent = (OpJavaElement)parents.peek();
@@ -200,6 +205,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * Discards the visited method.
      * @param node the visited node
      */
+    @Override
     public void endVisit(MethodDeclaration node) {
         parents.pop();
     }
@@ -209,6 +215,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * @param node the initializer node of the AST
      * @return always <code>true</code> to visit its child nodes next
      */
+    @Override
     public boolean visit(Initializer node) {
         int start = node.getStartPosition();
         int end = start + node.getLength() - 1;
@@ -230,6 +237,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * Discards the visited initializer.
      * @param node the visited node
      */
+    @Override
     public void endVisit(Initializer node) {
         parents.pop();
     }
@@ -244,8 +252,6 @@ public class OpJavaVisitor extends ASTVisitor {
         for (SingleVariableDeclaration param : params) {
             buf.append(" ");
             buf.append(param.toString());
-            // buf.append(param.getName().getIdentifier());
-            // buf.append(param.getType().toString());
         }
         if (buf.length() != 0) {
             return "(" + buf.substring(1) + ")";
@@ -258,20 +264,17 @@ public class OpJavaVisitor extends ASTVisitor {
      * @param node the field node of the AST
      * @return always <code>true</code> to visit its child nodes next
      */
+    @Override
     public boolean visit(FieldDeclaration node) {
-        Map<OpField, CodeRange> franges = new HashMap<OpField, CodeRange>();
         int start = node.getStartPosition();
         int end = node.getStartPosition() + node.getLength() - 1;
-        // Type type = node.getType();
-        // int typeStart = node.getStartPosition();
-        // int typeEnd = type.getStartPosition() + type.getLength() - 1;
         
-        OpField field = new OpField(0, 0, finfo, "");
         @SuppressWarnings("unchecked")
         List<VariableDeclarationFragment> fields = (List<VariableDeclarationFragment>)node.fragments();
+        Map<OpField, CodeRange> franges = new HashMap<OpField, CodeRange>();
         for (VariableDeclarationFragment f : fields) {
             String name = getClassName() + "#" + f.getName().getIdentifier();
-            field = new OpField(start, end, finfo, name);
+            OpField field = new OpField(start, end, finfo, name);
             elements.add(field);
             
             int fstart = f.getStartPosition();
@@ -287,11 +290,12 @@ public class OpJavaVisitor extends ASTVisitor {
             }
         }
         
+        OpField wfield = new OpField(start, end, finfo, "");
         if (parents.size() > 0) {
             OpJavaElement parent = (OpJavaElement)parents.peek();
-            parent.addJavaElement(field);
+            parent.addJavaElement(wfield);
         }
-        parents.push(field);
+        parents.push(wfield);
         
         return true;
     }
@@ -300,6 +304,7 @@ public class OpJavaVisitor extends ASTVisitor {
      * Discards the visited field.
      * @param node the visited node
      */
+    @Override
     public void endVisit(FieldDeclaration node) {
         parents.pop();
     }
