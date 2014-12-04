@@ -16,13 +16,11 @@ import org.jtool.changerepository.data.WorkspaceInfo;
 import org.jtool.changerepository.operation.OperationManager;
 import org.jtool.changerepository.operation.UnifiedOperation;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPage;
-
 import java.util.List;
 
 /**
@@ -30,11 +28,6 @@ import java.util.List;
  * @author Katsuhisa Maruyama
  */
 public class SourceCodeView implements ViewChangedListener {
-    
-    /**
-     * The composite that contains several controls.
-     */
-    protected Composite composite;
     
     /**
      * The button control contained in this source code view.
@@ -91,26 +84,14 @@ public class SourceCodeView implements ViewChangedListener {
     public void show(Composite parent, FileInfo finfo) {
         fileInfo = finfo;
         
-        composite = createSourceCodeViewControl(parent);
-    }
-    
-    /**
-     * Creates a source code view control.
-     * @param parent the parent widget of the source code view
-     * @return the created instance
-     */
-    public Composite createSourceCodeViewControl(Composite parent) {
-        Composite composite = new Composite(parent, SWT.NONE);
         FormLayout layout = new FormLayout();
-        composite.setLayout(layout);
+        parent.setLayout(layout);
         
         timelineControl = new TimelineControl(this);
-        timelineControl.createPartControl(composite, 0);
+        timelineControl.createPartControl(parent, 0);
         
         sourcecodeControl = new SourceCodeControl(this);
-        sourcecodeControl.createPartControl(composite, timelineControl.getControl(), 0);
-        
-        return composite;
+        sourcecodeControl.createPartControl(parent, timelineControl.getControl(), 0);
     }
     
     /**
@@ -118,7 +99,7 @@ public class SourceCodeView implements ViewChangedListener {
      * @return the control of the source code view
      */
     public Control getControl() {
-        return composite;
+        return timelineControl.getControl();
     }
     
     /**
@@ -126,7 +107,7 @@ public class SourceCodeView implements ViewChangedListener {
      * @return <code>true</code> if source code has been shown, or <code>false</code> 
      */
     public boolean hasShown() {
-        return composite != null;
+        return timelineControl != null;
     }
     
     /**
@@ -135,12 +116,6 @@ public class SourceCodeView implements ViewChangedListener {
     public void setFocus() {
         if (timelineControl != null) {
             timelineControl.setFocus();
-        }
-        if (sourcecodeControl != null) {
-            sourcecodeControl.setFocus();
-        }
-        if (composite != null) {
-            composite.setFocus();
         }
     }
     
@@ -155,10 +130,6 @@ public class SourceCodeView implements ViewChangedListener {
         if (sourcecodeControl != null) {
             sourcecodeControl.dispose();
             sourcecodeControl = null;
-        }
-        if (composite != null) {
-            composite.dispose();
-            composite = null;
         }
     }
     
