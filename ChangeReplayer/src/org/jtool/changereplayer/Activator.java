@@ -7,7 +7,6 @@
 package org.jtool.changereplayer;
 
 import org.jtool.changereplayer.ui.SourceCodeViewLoader;
-import org.jtool.changerecorder.history.OperationHistory;
 import org.jtool.changerepository.data.RepositoryManager;
 import org.osgi.framework.BundleContext;
 import org.eclipse.ui.IStartup;
@@ -57,9 +56,7 @@ public class Activator extends AbstractUIPlugin implements IStartup {
         SourceCodeViewLoader sourceCodeViewLoader = new SourceCodeViewLoader();
         sourceCodeViewLoader.loadExtensions();
         
-        String defaultDirPath = OperationHistory.getOperationHistoryDirPath().toString();
-        RepositoryManager.setDirectoryPath(defaultDirPath);
-        RepositoryManager.collectOperations();
+        RepositoryManager.getInstance().collectOperationsInDefaultPath();
         
         System.out.println("ChangeReplayer activated.");
     }

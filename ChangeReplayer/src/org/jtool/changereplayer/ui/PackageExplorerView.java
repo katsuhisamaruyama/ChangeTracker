@@ -18,6 +18,7 @@ import org.jtool.changerepository.data.WorkspaceInfo;
 import org.jtool.changerepository.event.RepositoryChangedEvent;
 import org.jtool.changerepository.event.RepositoryChangedListener;
 import org.jtool.changerepository.event.RepositoryEventSource;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -32,7 +33,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-
 import java.util.List;
 
 /**
@@ -61,6 +61,11 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
      * The table viewer for project selection
      */
     private TreeViewer viewer;
+    
+    /**
+     * The editor that displays the change history.
+     */
+    private ChangeHistoryEditor editor;
     
     /**
      * Creates a package explorer.
@@ -140,9 +145,6 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
         });
     }
     
-    public ChangeHistoryEditor editor;
-    
-    
     /**
      * Sends the view changed event.
      * @param finfo the file information
@@ -153,16 +155,34 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
     }
     
     /**
+     * Returns the editor that displays the change history.
+     * @return the change history editor
+     */
+    public ChangeHistoryEditor getEditor() {
+        return editor;
+    }
+    
+    /**
      * Makes actions on the tool bar.
      */
     private void makeToolBarActions() {
-        Action refreshAction = new Action("Refresh") {
+        Action workspaceAction = new Action("Workspace", IAction.AS_CHECK_BOX) {
+            private boolean useInternalWorkspace = true;
+            
             public void run() {
-                RepositoryManager.collectOperations();
+                if (useInternalWorkspace) {
+                    useInternalWorkspace = false;
+                    RepositoryManager.getInstance().setExternalWorkspace();
+                } else {
+                    useInternalWorkspace = true;
+                    RepositoryManager.getInstance().setInternalWorkspace();
+                }
             }
         };
-        refreshAction.setToolTipText("Refresh change history");
-        refreshAction.setImageDescriptor(refreshIcon);
+        workspaceAction.setToolTipText("Use internal/external workspace");
+        workspaceAction.setImageDescriptor(refreshIcon);
+        workspaceAction.setEnabled(true);
+        workspaceAction.setChecked(true);
         
         Action readAction = new Action("Read") {
             public void run() {
@@ -175,7 +195,7 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
         readAction.setImageDescriptor(repositoryIcon);
         
         IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
-        manager.add(refreshAction);
+        manager.add(workspaceAction);
         manager.add(readAction);
     }
     
@@ -201,7 +221,7 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
      * @return the collection of the project nodes
      */
     private TreeNode[] getProjectNodes() {
-        WorkspaceInfo winfo = RepositoryManager.getWorkspaceInfo();
+        WorkspaceInfo winfo = RepositoryManager.getInstance().getWorkspaceInfo();
         List<ProjectInfo> projects = winfo.getAllProjectInfo();
         TreeNode[] nodes = new TreeNode[projects.size()];
         for (int i = 0; i < projects.size(); i++) {

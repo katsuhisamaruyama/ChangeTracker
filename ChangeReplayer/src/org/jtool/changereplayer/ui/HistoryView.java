@@ -181,7 +181,7 @@ public class HistoryView extends ViewPart implements RepositoryChangedListener, 
         
         setOperationTable(finfo);
         
-        int idx = pview.editor.getActiveView().getCurrentOperationIndex();
+        int idx = pview.getEditor().getActiveView().getCurrentOperationIndex();
         operationTable.select(idx);
     }
     
