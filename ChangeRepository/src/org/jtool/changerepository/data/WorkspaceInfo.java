@@ -34,21 +34,10 @@ public class WorkspaceInfo extends RepositoryElementInfo {
     
     /**
      * Creates an instance that stores information on this workspace.
-     * @param the name of this workspace, which is the file path for the root of the workspace
-     * @param ops the operations for the whole repository
+     * @param path the path for the root of the workspace
      */
-    public WorkspaceInfo(String name, List<UnifiedOperation> ops) {
-        super(name);
-        operations = ops;
-        OperationManager.sort(operations);
-    }
-    
-    /**
-     * Creates an instance that stores information on this workspace.
-     * @param the name of this workspace, which is the file path for the root of the workspace
-     */
-    public WorkspaceInfo(String name) {
-        super(name);
+    public WorkspaceInfo(String path) {
+        super(path);
     }
     
     /**
@@ -58,6 +47,15 @@ public class WorkspaceInfo extends RepositoryElementInfo {
         projects.clear();
         files.clear();
         operations.clear();
+    }
+    
+    /**
+     * Creates an instance that stores information on this workspace.
+     * @param ops all the operations related to this workspace
+     */
+    public void setOperations(List<UnifiedOperation> ops) {
+        operations = ops;
+        OperationManager.sort(operations);
     }
     
     /**

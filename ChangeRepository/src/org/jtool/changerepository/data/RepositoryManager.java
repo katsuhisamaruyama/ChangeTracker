@@ -14,11 +14,11 @@ import org.jtool.changerecorder.operation.IOperation;
 import org.jtool.changerecorder.history.OperationHistory;
 import org.jtool.changerecorder.history.Xml2Operation;
 import org.jtool.changerecorder.util.XmlFileStream;
-import org.jtool.changerecorder.util.Time;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.w3c.dom.Document;
+
 import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
@@ -33,101 +33,140 @@ import java.lang.reflect.InvocationTargetException;
 public class RepositoryManager {
     
     /**
-     * The collection of all operations in this history repository.
+     * The single instance of this repository manager.
      */
-    private static List<UnifiedOperation> allOperations = new ArrayList<UnifiedOperation>(65536);
+    private static RepositoryManager singleton = new RepositoryManager();
     
     /**
      * The map stores projects currently existing in this repository.
      */
-    private static Map<String, ProjectInfo> projectInfoMap = new HashMap<String, ProjectInfo>();
+    private Map<String, ProjectInfo> projectInfoMap = new HashMap<String, ProjectInfo>();
     
     /**
      * The map stores packages currently existing in this repository.
      */
-    private static Map<String, PackageInfo> packageInfoMap = new HashMap<String, PackageInfo>();
+    private Map<String, PackageInfo> packageInfoMap = new HashMap<String, PackageInfo>();
     
     /**
      * The map stores files currently existing in this repository.
      */
-    private static Map<String, FileInfo> fileInfoMap = new HashMap<String, FileInfo>();
+    private Map<String, FileInfo> fileInfoMap = new HashMap<String, FileInfo>();
     
     /**
-     * The information on the whole repository.
+     * The information on the workspace, which indicates either internal one or external one.
      */
-    private static WorkspaceInfo workspaceInfo;
+    private WorkspaceInfo workspaceInfo;
     
     /**
-     * The top path for the directory containing the history files.
+     * The information on the internal workspace, which indicates Eclipse's default workspace.
      */
-    private static String dirpath;
+    private WorkspaceInfo internalWorkspaceInfo;
     
     /**
-     * The time when the repository information was last updated.
+     * The information on the external workspace, which is explicitly specified by users.
      */
-    private static long lastUpdateTime = 0;
+    private WorkspaceInfo externalWorkspaceInfo;
     
     /**
-     * Sets the path of the directory containing the history files.
-     * @param path the top path for the directory
+     * Creates an empty object.
      */
-    public static void setDirectoryPath(String path) {
-        dirpath = path;
-        workspaceInfo = new WorkspaceInfo(dirpath, new ArrayList<UnifiedOperation>());
+    private RepositoryManager() {
     }
     
     /**
-     * Collects newly all operations stored in the history files existing in a specified directory.
+     * Returns the single instance of this repository manager.
+     * @return the single instance
      */
-    public static void collectOperations() {
-        if (dirpath == null) {
-            return;
+    public static RepositoryManager getInstance() {
+        return singleton;
+    }
+    
+    /**
+     * Returns information on the current workspace.
+     * @return workspace information
+     */
+    public WorkspaceInfo getWorkspaceInfo() {
+        return workspaceInfo;
+    }
+    
+    /**
+     * Sets the internal workspace as the current one.
+     */
+    public void setInternalWorkspace() {
+        workspaceInfo = internalWorkspaceInfo;
+    }
+    
+    /**
+     * Sets the external workspace as the current one.
+     */
+    public void setExternalWorkspace() {
+        workspaceInfo = externalWorkspaceInfo;
+    }
+    
+    /**
+     * Collects all operations stored in the history files existing in a specified directory.
+     * @param path the top path for the directory storing the history files
+     */
+    public void collectOperationsInDefaultPath() {
+        String defaultDirPath = OperationHistory.getOperationHistoryDirPath().toString();
+        internalWorkspaceInfo = registOperations(defaultDirPath);
+        
+        setInternalWorkspace();
+    }
+    
+    /**
+     * Collects all operations stored in the history files existing in a specified directory.
+     * @param path the top path for the directory storing the history files
+     */
+    public void collectOperationsInRepository(String path) {
+        externalWorkspaceInfo.clear();
+        externalWorkspaceInfo = registOperations(path);
+        
+        setExternalWorkspace();
+    }
+    
+    /**
+     * Collects all operations stored in the history files existing in a specified directory.
+     * @param path the top path for the directory storing the history files
+     * @return the information on the workspace
+     */
+    private WorkspaceInfo registOperations(String path) {
+        if (path == null) {
+            return null;
         }
         
-        List<File> files = getAllHistoryFiles(dirpath);
+        List<File> files = getAllHistoryFiles(path);
         if (files.size() == 0) {
-            return;
+            return null;
         }
         
-        long updateTime = Time.getCurrentTime();
+        WorkspaceInfo workspaceInfo = collectOperations(path, files);
         
-        if (allOperations.size() == 0) {
-            collectOperations(files);
-            
-        } else {
-            for (File file : files) {
-                if (file.lastModified() > lastUpdateTime) {
-                    clearAllInfo();
-                    collectOperations(files);
-                    break;
-                }
-            }
+        if (workspaceInfo != null) {
+            RepositoryChangedEvent evt = new RepositoryChangedEvent(this);
+            RepositoryEventSource.getInstance().fire(evt);
         }
         
-        lastUpdateTime = updateTime;
+        return workspaceInfo;
     }
     
     /**
      * Clears all information related to the whole repository.
      */
-    public static void clearAllInfo() {
+    private void clearAllInfo() {
         projectInfoMap.clear();
         packageInfoMap.clear();
         fileInfoMap.clear();
-        
-        allOperations.clear();
-        workspaceInfo.clear();
-        
-        RepositoryChangedEvent evt =
-          new RepositoryChangedEvent(new RepositoryManager(), RepositoryChangedEvent.Type.CLEAR);
-        RepositoryEventSource.getInstance().fire(evt);
     }
     
     /**
-     * Collects all operations stored in the history files existing in a specified directory.
-     * @param targetFiles the collection of history files storing operations
+     * Collects all operations stored in history files existing in a specified directory.
+     * @param path the top path for the directory storing the history files
+     * @param files the collection of history files storing the operations
+     * @return the information on the workspace
      */
-    private static void collectOperations(final List<File> files) {
+    private WorkspaceInfo collectOperations(String path, final List<File> files) {
+        final WorkspaceInfo workspaceInfo = new WorkspaceInfo(path);
         try {
             IWorkbenchWindow window = Activator.getWorkbenchWindow();
             window.run(false, true, new IRunnableWithProgress() {
@@ -141,10 +180,10 @@ public class RepositoryManager {
                 public void run(IProgressMonitor monitor) throws InterruptedException {
                     monitor.beginTask("Extracting operations", files.size() * 2);
                     
-                    readHistoryFiles(files, monitor);
-                    workspaceInfo = new WorkspaceInfo(dirpath, allOperations);
+                    List<UnifiedOperation> ops = readHistoryFiles(files, monitor);
+                    workspaceInfo.setOperations(ops);
                     
-                    registOperations(monitor);
+                    registOperations(workspaceInfo, ops, monitor);
                     
                     workspaceInfo.setTimeRange();
                     workspaceInfo.fixMismatches();
@@ -155,35 +194,27 @@ public class RepositoryManager {
             
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-            System.err.println("Fails to read the history files " + e.getCause());
+            System.err.println(e.getCause());
             clearAllInfo();
-            return;
+            return null;
             
         } catch (InterruptedException e) {
-            System.err.println("Fails to read the history files " + e.getCause());
+            System.err.println(e.getCause());
             clearAllInfo();
-            return;
+            return null;
         }
         
-        RepositoryChangedEvent evt =
-          new RepositoryChangedEvent(new RepositoryManager(), RepositoryChangedEvent.Type.UPDATE);
-        RepositoryEventSource.getInstance().fire(evt);
-    }
-    
-    /**
-     * Obtains the information on the whole repository.
-     * @return the information on the whole repository
-     */
-    public static WorkspaceInfo getWorkspaceInfo() {
+        clearAllInfo();
+        
         return workspaceInfo;
     }
     
     /**
-     * Returns all the descendant history files of the specified directory.
+     * Returns all descendant history files of a specified directory.
      * @param path the path of the specified directory
      * @return the descendant files
      */
-    private static List<File> getAllHistoryFiles(String path) {
+    private List<File> getAllHistoryFiles(String path) {
         List<File> files = new ArrayList<File>();
         
         File dir = new File(path);
@@ -202,60 +233,67 @@ public class RepositoryManager {
     }
     
     /**
-     * Reads history files existing in the specified directory.
-     * @param files the collection of the history files 
+     * Reads the history files.
+     * @param files the collection of the history files
      * @param monitor the progress monitor to use to display progress and receive requests for cancellation
-     * @throws InterruptedException if the operation detects a request to cancel
+     * @return the collection of all the operations stored in the history files
+     * @throws InterruptedException if the operation detects a request to cancel or any failure
      */
-    private static void readHistoryFiles(List<File> files, IProgressMonitor monitor) throws InterruptedException {
+    private List<UnifiedOperation> readHistoryFiles(List<File> files, IProgressMonitor monitor) throws InterruptedException {
+        List<UnifiedOperation> operations = new ArrayList<UnifiedOperation>(65536);
         for (File file : files) {
             String fpath = file.getAbsolutePath();
             Document doc = null;
             try {
                 doc = XmlFileStream.read(fpath);
             } catch (Exception e) {
-                System.err.println("Fails to read the history file: " + fpath);
+                throw new InterruptedException("Fails to read the history files " + fpath);
             }
             
             OperationHistory history = Xml2Operation.convert(doc);
             
-            if (history != null) {
-                for (int i = 0; i < history.size(); i++) {
-                    IOperation op = history.getOperation(i);
-                    List<UnifiedOperation> ops = UnifiedOperation.create(op);
-                    allOperations.addAll(ops);
-                }
+            if (history == null) {
+                throw new InterruptedException("Fails to convert the history files " + fpath);
+            }
+            
+            for (int i = 0; i < history.size(); i++) {
+                IOperation op = history.getOperation(i);
+                List<UnifiedOperation> ops = UnifiedOperation.create(op);
+                operations.addAll(ops);
             }
             
             if (monitor.isCanceled()) {
                 monitor.done();
-                throw new InterruptedException();
+                throw new InterruptedException("User interrupted");
             }
             
             monitor.worked(1);
         }
+        
+        return operations;
     }
     
     /**
-     * Registers operations on information of their respective files, packages, and projects. 
+     * Registers operations on information of their respective files, packages, and projects.
+     * @param winfo the information on the workspace
+     * @param ops the collection of all the operations stored in the history files
      * @param monitor the progress monitor to use to display progress and receive requests for cancellation
      * @throws InterruptedException if the operation detects a request to cancel
      */
-    private static void registOperations(IProgressMonitor monitor) throws InterruptedException {
-        for (int idx = 0; idx < allOperations.size(); idx++) {
-            UnifiedOperation op = allOperations.get(idx);
+    private void registOperations(WorkspaceInfo winfo, List<UnifiedOperation> ops, IProgressMonitor monitor) throws InterruptedException {
+        for (int idx = 0; idx < ops.size(); idx++) {
+            UnifiedOperation op = ops.get(idx);
             
-            String path = op.getFile();
-            String projectName = getProjectName(path);
-            String packageName = getPackageName(path);
-            String fileName = getFileName(path);
-            // System.out.println("OP = " + idx + " " + projectName + " " + packageName + " " + fileName);
+            String filePath = op.getFile();
+            String projectName = getProjectName(filePath);
+            String packageName = getPackageName(filePath);
+            String fileName = getFileName(filePath);
             
             if (op.isResourceOperation()) {
-                resourecChange(op, projectName, packageName, fileName);
+                resourecChange(winfo, op, projectName, packageName, fileName);
                 
             } else {
-                registOperation(op, projectName, packageName, fileName);
+                registOperation(winfo, op, projectName, packageName, fileName);
             }
             
             if (monitor.isCanceled()) {
@@ -269,22 +307,23 @@ public class RepositoryManager {
     
     /**
      * Registers resource change operations on information of their respective files.
+     * @param winfo the information on the workspace
      * @param op the operation to be stored
      * @param projectName the name of the project related to the stored operation
      * @param packageName the name of the package related to the stored operation
      * @param fileName the name of the file related to the stored operation
      */
-    private static void resourecChange(UnifiedOperation op, String projectName, String packageName, String fileName) {
+    private void resourecChange(WorkspaceInfo winfo, UnifiedOperation op, String projectName, String packageName, String fileName) {
         if (op.isFileResourceOperation()) {
             if (op.isResourceAddedOperation()) {
-                registOperation(op, projectName, packageName, fileName);
+                registOperation(winfo, op, projectName, packageName, fileName);
                 
             } else if (op.isResourceRemovedOperation()) {
-                registOperation(op, projectName, packageName, fileName);
+                registOperation(winfo, op, projectName, packageName, fileName);
                 fileInfoMap.remove(fileName);
                 
             } else if (op.isResourceMovedToOperation() || op.isResourceRenamedToOperation()) {
-                registOperation(op, projectName, packageName, fileName);
+                registOperation(winfo, op, projectName, packageName, fileName);
                 
             } else if (op.isResourceMovedFromOperation() || op.isResourceRenamedFromOperation()) {
                 String oldPath = op.getIdenticalPath();
@@ -292,7 +331,7 @@ public class RepositoryManager {
                 FileInfo oldFileInfo = fileInfoMap.get(oldFileName);
                 fileInfoMap.remove(oldFileName);
                 
-                registOperation(op, projectName, packageName, fileName);
+                registOperation(winfo, op, projectName, packageName, fileName);
                 FileInfo newFileInfo = fileInfoMap.get(fileName);
                 
                 oldFileInfo.setFileInfoTo(newFileInfo);
@@ -303,18 +342,19 @@ public class RepositoryManager {
     
     /**
      * Registers operations on information of their respective files, packages, and projects.
+     * @param winfo the information on the workspace
      * @param op the operation to be stored
      * @param projectName the name of the project related to the stored operation
      * @param packageName the name of the package related to the stored operation
      * @param fileName the name of the file related to the stored operation
      */
-    private static void registOperation(UnifiedOperation op, String projectName, String packageName, String fileName) {
+    private void registOperation(WorkspaceInfo winfo, UnifiedOperation op, String projectName, String packageName, String fileName) {
         ProjectInfo projectInfo = projectInfoMap.get(getProjectKey(projectName));
         if (projectInfo == null) {
-            projectInfo = new ProjectInfo(projectName, workspaceInfo);
+            projectInfo = new ProjectInfo(projectName, winfo);
             projectInfoMap.put(getProjectKey(projectName), projectInfo);
             
-            workspaceInfo.addProjectInfo(projectInfo);
+            winfo.addProjectInfo(projectInfo);
         }
         
         PackageInfo packageInfo = packageInfoMap.get(getPackageKey(projectName, packageName));
@@ -330,7 +370,7 @@ public class RepositoryManager {
             fileInfo = new FileInfo(fileName, op.getFile(), projectInfo, packageInfo);
             fileInfoMap.put(getFileKey(projectName, packageName, fileName), fileInfo);
             
-            workspaceInfo.addFileInfo(fileInfo);
+            winfo.addFileInfo(fileInfo);
             projectInfo.addFileInfo(fileInfo);
             packageInfo.addFileInfo(fileInfo);
         }
@@ -343,7 +383,7 @@ public class RepositoryManager {
      * @param projectName the project name
      * @return the key string for the project
      */
-    private static String getProjectKey(String projectName) {
+    private String getProjectKey(String projectName) {
         return projectName;
     }
     
@@ -353,7 +393,7 @@ public class RepositoryManager {
      * @param packageName the package name
      * @return the key string for the package
      */
-    private static String getPackageKey(String projectName, String packageName) {
+    private String getPackageKey(String projectName, String packageName) {
         return projectName + "%" + packageName;
     }
     
@@ -364,7 +404,7 @@ public class RepositoryManager {
      * @param fileName the file name
      * @return the key string for the file
      */
-    private static String getFileKey(String projectName, String packageName, String fileName) {
+    private String getFileKey(String projectName, String packageName, String fileName) {
         return projectName + "%" + packageName + "%" + fileName;
     }
     
@@ -373,7 +413,7 @@ public class RepositoryManager {
      * @param the path for the file
      * @return the project name
      */
-    private static String getProjectName(String path) {
+    private String getProjectName(String path) {
         int firstIndex = path.indexOf('/', 1);
         if (firstIndex == -1) {
             return "Unknown";
@@ -387,7 +427,7 @@ public class RepositoryManager {
      * @param path the path for the file
      * @return the package name
      */
-    private static String getPackageName(String path) {
+    private String getPackageName(String path) {
         final String SRCDIR = "/src/";
         int firstIndex = path.indexOf(SRCDIR);
         int lastIndex = path.lastIndexOf('/') + 1;
@@ -407,7 +447,7 @@ public class RepositoryManager {
      * @param path the path for the file
      * @return the file name without its path information
      */
-    private static String getFileName(String path) {
+    private String getFileName(String path) {
         if (path == null) {
             return "Unknown";
         }
