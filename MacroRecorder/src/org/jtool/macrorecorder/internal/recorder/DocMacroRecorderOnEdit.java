@@ -67,7 +67,8 @@ public class DocMacroRecorderOnEdit extends DocMacroRecorder {
             return;
         }
         
-        DocumentManager.register(doc, styledText, documentManager);
+        register(doc, styledText, documentManager);
+        register(editor, completionManager);
         
         preCode = doc.get();
         
@@ -82,7 +83,8 @@ public class DocMacroRecorderOnEdit extends DocMacroRecorder {
             return;
         }
         
-        DocumentManager.unregister(doc, styledText, documentManager);
+        unregister(doc, styledText, documentManager);
+        unregister(editor, completionManager);
         
         super.stop();
     }

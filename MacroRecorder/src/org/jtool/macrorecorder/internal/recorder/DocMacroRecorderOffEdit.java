@@ -51,7 +51,7 @@ public class DocMacroRecorderOffEdit extends DocMacroRecorder {
             return;
         }
         
-        DocumentManager.register(doc, null, documentManager);
+        register(doc, null, documentManager);
         
         preCode = doc.get();
         
@@ -66,7 +66,7 @@ public class DocMacroRecorderOffEdit extends DocMacroRecorder {
             return;
         }
         
-        DocumentManager.unregister(doc, null, documentManager);
+        unregister(doc, null, documentManager);
         
         super.stop();
     }

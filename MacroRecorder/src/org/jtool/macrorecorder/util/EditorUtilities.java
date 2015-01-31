@@ -9,10 +9,14 @@ package org.jtool.macrorecorder.util;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.text.source.ISourceViewerExtension3;
+import org.eclipse.jface.text.source.ISourceViewerExtension4;
 import org.eclipse.jface.text.source.ContentAssistantFacade;
+import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -23,6 +27,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.part.FileEditorInput;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +52,51 @@ public class EditorUtilities {
     }
     
     /**
+     * Obtains the source viewer of an editor.
+     * @param editor the editor
+     * @return the source viewer of the editor
+     */
+    public static ISourceViewerExtension3 getSourceViewerExtension3(IEditorPart editor) {
+        ISourceViewer viewer = getSourceViewer(editor);
+        
+        if (viewer instanceof ISourceViewerExtension3) {
+            return (ISourceViewerExtension3)viewer;
+        }
+        return null;
+    }
+    
+    /**
+     * Obtains the source viewer of an editor.
+     * @param editor the editor
+     * @return the source viewer of the editor
+     */
+    public static ISourceViewerExtension4 getSourceViewerExtension4(IEditorPart editor) {
+        ISourceViewer viewer = getSourceViewer(editor);
+        
+        if (viewer instanceof ISourceViewerExtension4) {
+            return (ISourceViewerExtension4) viewer;
+        }
+        return null;
+    }
+    
+    /**
+     * Obtains the text viewer of an editor.
+     * @param editor the editor
+     * @return the text viewer of the editor
+     */
+    public static ITextViewerExtension5 getTextViewerExtension5(IEditorPart editor) {
+        if (editor == null) {
+            return null;
+        }
+        
+        ITextViewer viewer = (ITextViewer) editor.getAdapter(ITextOperationTarget.class);
+        if (viewer instanceof ITextViewerExtension5) {
+            return (ITextViewerExtension5) viewer;
+        }
+        return null;
+    }
+    
+    /**
      * Obtains the styled text of an editor.
      * @param editor the editor
      * @return the styled text of the editor
@@ -60,14 +110,27 @@ public class EditorUtilities {
     }
     
     /**
+     * Obtains the quick assist assistant of an editor.
+     * @param editor the editor
+     * @return the content assistant facade of the editor
+     */
+    public static IQuickAssistAssistant getQuickAssistAssistant(IEditorPart editor) {
+        ISourceViewerExtension3 viewer = getSourceViewerExtension3(editor);
+        if (viewer != null) {
+            return viewer.getQuickAssistAssistant();
+        }
+        return null;
+    }
+    
+    /**
      * Obtains the content assistant facade of an editor.
      * @param editor the editor
      * @return the content assistant facade of the editor
      */
     public static ContentAssistantFacade getContentAssistantFacade(IEditorPart editor) {
-        ISourceViewer viewer = getSourceViewer(editor);
-        if (viewer != null && viewer instanceof SourceViewer) {
-            return ((SourceViewer)viewer).getContentAssistantFacade();
+        ISourceViewerExtension4 viewer = EditorUtilities.getSourceViewerExtension4(editor);
+        if (viewer != null) {
+            viewer.getContentAssistantFacade();
         }
         return null;
     }

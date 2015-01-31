@@ -12,12 +12,9 @@ import org.jtool.macrorecorder.macro.CancelMacro;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.text.undo.DocumentUndoManagerRegistry;
 import org.eclipse.text.undo.IDocumentUndoListener;
 import org.eclipse.text.undo.DocumentUndoEvent;
-import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
@@ -60,54 +57,6 @@ public class DocumentManager implements IDocumentListener, IDocumentUndoListener
      */
     public DocumentManager(DocMacroRecorder recorder) {
         this.recorder = recorder;
-    }
-    
-    /**
-     * Registers a document manager with an editor.
-     * @param doc the document to be managed
-     * @param st the styled text of the editor
-     * @param dm the document manager
-     */
-    public static void register(IDocument doc, StyledText st, DocumentManager dm) {
-        if (doc != null) {
-            doc.addDocumentListener(dm);
-            
-            DocumentUndoManagerRegistry.connect(doc);
-            IDocumentUndoManager undoManager = DocumentUndoManagerRegistry.getDocumentUndoManager(doc);
-            if (undoManager != null) {
-                undoManager.addDocumentUndoListener(dm);
-            }
-        }
-        
-        if (st != null) {
-            st.addListener(SWT.KeyDown, dm);
-            st.addListener(SWT.MouseDown, dm);
-            st.addListener(SWT.MouseDoubleClick, dm);
-        }
-    }
-    
-    /**
-     * Unregisters a document manager with an editor.
-     * @param doc the document to be managed
-     * @param st the styled text of the editor
-     * @param dm the document manager
-     */
-    public static void unregister(IDocument doc, StyledText st, DocumentManager dm) {
-        if (doc != null) {
-            doc.removeDocumentListener(dm);
-            
-            IDocumentUndoManager undoManager = DocumentUndoManagerRegistry.getDocumentUndoManager(doc);
-            DocumentUndoManagerRegistry.disconnect(doc);
-            if (undoManager != null) {
-                undoManager.removeDocumentUndoListener(dm);
-            }
-        }
-        
-        if (st != null) {
-            st.removeListener(SWT.KeyDown, dm);
-            st.removeListener(SWT.MouseDown, dm);
-            st.removeListener(SWT.MouseDoubleClick, dm);
-        }
     }
     
     /**

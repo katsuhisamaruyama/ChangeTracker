@@ -15,9 +15,13 @@ import org.jtool.macrorecorder.macro.ExecutionMacro;
 import org.jtool.macrorecorder.macro.TriggerMacro;
 import org.jtool.macrorecorder.macro.ResourceMacro;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.ltk.core.refactoring.RefactoringCore;
+import org.eclipse.ltk.core.refactoring.history.IRefactoringHistoryService;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,9 +100,9 @@ public class MenuMacroRecorder {
      * Starts the recording of menu actions.
      */
     public void start() {
-        CommandExecutionManager.register(commandManager);
-        RefactoringExecutionManager.register(refactoringManager);
-        ResourceChangedManager.register(resourceChangeManager);
+        register(commandManager);
+        register(refactoringManager);
+        register(resourceChangeManager);
         
         rawMacros.clear();
         compoundMacro = null;
@@ -109,11 +113,73 @@ public class MenuMacroRecorder {
      * Stops the recording of menu actions.
      */
     public void stop() {
-        CommandExecutionManager.unregister(commandManager);
-        RefactoringExecutionManager.unregister(refactoringManager);
-        ResourceChangedManager.unregister(resourceChangeManager);
+        unregister(commandManager);
+        unregister(refactoringManager);
+        unregister(resourceChangeManager);
         
         rawMacros.clear();
+    }
+    
+    /**
+     * Registers a command manager with the command service of the workbench.
+     * @param cm the command manager
+     */
+    protected void register(CommandExecutionManager cm) {
+        ICommandService cs = (ICommandService)PlatformUI.getWorkbench().getService(ICommandService.class);
+        if (cs != null) {
+            cs.addExecutionListener(cm);
+        }
+    }
+    
+    /**
+     * Unregisters a command manager with the command service of the workbench.
+     * @param cm the command manager
+     */
+    protected void unregister(CommandExecutionManager cm) {
+        ICommandService cs = (ICommandService)PlatformUI.getWorkbench().getService(ICommandService.class);
+        if (cs != null) {
+            cs.removeExecutionListener(cm);
+        }
+    }
+    
+    /**
+     * Registers a refactoring execution manager with the refactoring history service.
+     * @param rm the refactoring execution manager
+     */
+    protected void register(RefactoringExecutionManager rm) {
+        IRefactoringHistoryService rs = RefactoringCore.getHistoryService();
+        if (rs != null) {
+            rs.addExecutionListener(rm);
+            // rs.addHistoryListener(rm);
+        }
+    }
+    
+    /**
+     * Unregisters a refactoring execution manager with the refactoring history service.
+     * @param rm the refactoring execution manager
+     */
+    protected void unregister(RefactoringExecutionManager rm) {
+        IRefactoringHistoryService rs = RefactoringCore.getHistoryService();
+        if (rs != null) {
+            rs.removeExecutionListener(rm);
+            // rs.removeHistoryListener(rm);
+        }
+    }
+    
+    /**
+     * Registers an element change manager with the Java model.
+     * @param em the element change manager
+     */
+    public static void register(ResourceChangedManager em) {
+        JavaCore.addElementChangedListener(em);
+    }
+    
+    /**
+     * Unregisters an element change manager with the Java model.
+     * @param em the element change manager
+     */
+    public static void unregister(ResourceChangedManager em) {
+        JavaCore.removeElementChangedListener(em);
     }
     
     /**

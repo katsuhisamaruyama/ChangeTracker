@@ -13,8 +13,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IExecutionListener;
 import org.eclipse.core.commands.NotHandledException;
 import org.eclipse.core.commands.common.NotDefinedException;
-import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Manages command events (menu etc.).
@@ -33,28 +31,6 @@ public class CommandExecutionManager implements IExecutionListener {
      */
     public CommandExecutionManager(MenuMacroRecorder recorder) {
         this.recorder = recorder;
-    }
-    
-    /**
-     * Registers a command manager with the command service of the workbench.
-     * @param cm the command manager
-     */
-    public static void register(CommandExecutionManager cm) {
-        ICommandService cs = (ICommandService)PlatformUI.getWorkbench().getService(ICommandService.class);
-        if (cs != null) {
-            cs.addExecutionListener(cm);
-        }
-    }
-    
-    /**
-     * Unregisters a command manager with the command service of the workbench.
-     * @param cm the command manager
-     */
-    public static void unregister(CommandExecutionManager cm) {
-        ICommandService cs = (ICommandService)PlatformUI.getWorkbench().getService(ICommandService.class);
-        if (cs != null) {
-            cs.removeExecutionListener(cm);
-        }
     }
     
     /**

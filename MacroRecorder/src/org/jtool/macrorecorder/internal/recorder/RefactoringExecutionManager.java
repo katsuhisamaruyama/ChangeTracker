@@ -8,12 +8,10 @@ package org.jtool.macrorecorder.internal.recorder;
 
 import org.jtool.macrorecorder.macro.Macro;
 import org.jtool.macrorecorder.macro.TriggerMacro;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.history.IRefactoringExecutionListener;
 import org.eclipse.ltk.core.refactoring.history.RefactoringExecutionEvent;
 import org.eclipse.ltk.core.refactoring.history.IRefactoringHistoryListener;
 import org.eclipse.ltk.core.refactoring.history.RefactoringHistoryEvent;
-import org.eclipse.ltk.core.refactoring.history.IRefactoringHistoryService;
 
 /**
  * Manages refactoring events.
@@ -32,30 +30,6 @@ public class RefactoringExecutionManager implements IRefactoringExecutionListene
      */
     public RefactoringExecutionManager(MenuMacroRecorder recorder) {
         this.recorder = recorder;
-    }
-    
-    /**
-     * Registers a refactoring execution manager with the refactoring history service.
-     * @param rm the refactoring execution manager
-     */
-    public static void register(RefactoringExecutionManager rm) {
-        IRefactoringHistoryService rs = RefactoringCore.getHistoryService();
-        if (rs != null) {
-            rs.addExecutionListener(rm);
-            // rs.addHistoryListener(rm);
-        }
-    }
-    
-    /**
-     * Unregisters a refactoring execution manager with the refactoring history service.
-     * @param rm the refactoring execution manager
-     */
-    public static void unregister(RefactoringExecutionManager rm) {
-        IRefactoringHistoryService rs = RefactoringCore.getHistoryService();
-        if (rs != null) {
-            rs.removeExecutionListener(rm);
-            // rs.removeHistoryListener(rm);
-        }
     }
     
     /**

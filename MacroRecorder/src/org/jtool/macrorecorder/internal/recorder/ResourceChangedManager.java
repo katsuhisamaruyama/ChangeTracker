@@ -10,7 +10,6 @@ import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaCore;
 import org.jtool.macrorecorder.macro.ResourceMacro;
 import java.util.List;
 import java.util.ArrayList;
@@ -32,22 +31,6 @@ public class ResourceChangedManager implements IElementChangedListener {
      */
     public ResourceChangedManager(MenuMacroRecorder recorder) {
         this.recorder = recorder;
-    }
-    
-    /**
-     * Registers an element change manager with the Java model.
-     * @param em the element change manager
-     */
-    public static void register(ResourceChangedManager em) {
-        JavaCore.addElementChangedListener(em);
-    }
-    
-    /**
-     * Unregisters an element change manager with the Java model.
-     * @param em the element change manager
-     */
-    public static void unregister(ResourceChangedManager em) {
-        JavaCore.removeElementChangedListener(em);
     }
     
     /**

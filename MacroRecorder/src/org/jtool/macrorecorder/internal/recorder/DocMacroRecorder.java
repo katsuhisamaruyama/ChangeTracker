@@ -6,7 +6,16 @@
 
 package org.jtool.macrorecorder.internal.recorder;
 
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.ContentAssistantFacade;
+import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
+import org.eclipse.text.undo.IDocumentUndoManager;
+import org.eclipse.ui.IEditorPart;
 import org.jtool.macrorecorder.recorder.Recorder;
+import org.jtool.macrorecorder.util.EditorUtilities;
 import org.jtool.macrorecorder.macro.Macro;
 import org.jtool.macrorecorder.macro.CompoundMacro;
 import org.jtool.macrorecorder.macro.DocumentMacro;
@@ -29,6 +38,11 @@ public class DocMacroRecorder {
      * A manager that manages document events.
      */
     protected DocumentManager documentManager;
+    
+    /**
+     * A manager that manages code completion events.
+     */
+    protected CodeCompletionManager completionManager;
     
     /**
      * The collection of raw macros that were recorded.
@@ -75,6 +89,7 @@ public class DocMacroRecorder {
         this.recorder = recorder;
         
         this.documentManager = new DocumentManager(this);
+        this.completionManager = new CodeCompletionManager(this);
         this.rawMacros = new ArrayList<Macro>();
     }
     
@@ -97,6 +112,92 @@ public class DocMacroRecorder {
         needDiff();
         
         rawMacros.clear();
+    }
+    
+    /**
+     * Registers a document manager with an editor.
+     * @param doc the document to be managed
+     * @param st the styled text of the editor
+     * @param dm the document manager
+     */
+    protected void register(IDocument doc, StyledText st, DocumentManager dm) {
+        if (doc != null) {
+            doc.addDocumentListener(dm);
+            
+            DocumentUndoManagerRegistry.connect(doc);
+            IDocumentUndoManager undoManager = DocumentUndoManagerRegistry.getDocumentUndoManager(doc);
+            if (undoManager != null) {
+                undoManager.addDocumentUndoListener(dm);
+            }
+        }
+        
+        if (st != null) {
+            st.addListener(SWT.KeyDown, dm);
+            st.addListener(SWT.KeyUp, dm);
+            st.addListener(SWT.MouseDown, dm);
+            st.addListener(SWT.MouseUp, dm);
+            st.addListener(SWT.MouseDoubleClick, dm);
+        }
+    }
+    
+    /**
+     * Unregisters a document manager with an editor.
+     * @param doc the document to be managed
+     * @param st the styled text of the editor
+     * @param dm the document manager
+     */
+    protected void unregister(IDocument doc, StyledText st, DocumentManager dm) {
+        if (doc != null) {
+            doc.removeDocumentListener(dm);
+            
+            IDocumentUndoManager undoManager = DocumentUndoManagerRegistry.getDocumentUndoManager(doc);
+            DocumentUndoManagerRegistry.disconnect(doc);
+            if (undoManager != null) {
+                undoManager.removeDocumentUndoListener(dm);
+            }
+        }
+        
+        if (st != null) {
+            st.removeListener(SWT.KeyDown, dm);
+            st.removeListener(SWT.KeyUp, dm);
+            st.removeListener(SWT.MouseDown, dm);
+            st.removeListener(SWT.MouseUp, dm);
+            st.removeListener(SWT.MouseDoubleClick, dm);
+        }
+    }
+    
+    /**
+     * Registers a code completion execution manager with the editor.
+     * @param editor the editor
+     * @param rm the code completion execution manager
+     */
+    protected void register(IEditorPart editor, CodeCompletionManager cm) {
+        IQuickAssistAssistant assistant = EditorUtilities.getQuickAssistAssistant(editor);
+        if (assistant != null) {
+            assistant.addCompletionListener(cm);
+        }
+        
+        ContentAssistantFacade facade = EditorUtilities.getContentAssistantFacade(editor);
+        if (facade != null) {
+            facade.addCompletionListener(cm);
+        }
+    }
+    
+    /**
+     * Unregisters a code completion manager with the editor.
+     * @param editor the editor
+     * @param rm the code completion execution manager
+     */
+    protected void unregister(IEditorPart editor, CodeCompletionManager cm) {
+        IQuickAssistAssistant assistant = EditorUtilities.getQuickAssistAssistant(editor);
+        if (assistant != null) {
+            assistant.removeCompletionListener(cm);
+        }
+        
+        ContentAssistantFacade facade = EditorUtilities.getContentAssistantFacade(editor);
+        if (facade != null) {
+            facade.removeCompletionListener(cm);
+        }
     }
     
     /**
