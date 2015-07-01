@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -76,22 +76,25 @@ public class SourceCodeView implements ViewChangedListener {
     }
     
     /**
-     * Show the source code of a file.
+     * Shows the source code of a file.
      * @param parent the parent widget of the source code view
-     * @param finfo the file information on the file displayed on the source code view
-     * @param time the focal time for the file
      */
-    public void show(Composite parent, FileInfo finfo) {
-        fileInfo = finfo;
-        
+    public void createControls(Composite parent) {
         FormLayout layout = new FormLayout();
         parent.setLayout(layout);
         
         timelineControl = new TimelineControl(this);
-        timelineControl.createPartControl(parent, 0);
+        timelineControl.createPartControl(parent);
         
         sourcecodeControl = new SourceCodeControl(this);
-        sourcecodeControl.createPartControl(parent, timelineControl.getControl(), 0);
+        sourcecodeControl.createPartControl(parent, timelineControl.getControl());
+    }
+    
+    /**
+     * Sets the time line bar.
+     */
+    public void setTimelineBar() {
+        timelineControl.setTimelineBar();
     }
     
     /**
@@ -100,14 +103,6 @@ public class SourceCodeView implements ViewChangedListener {
      */
     public Control getControl() {
         return timelineControl.getControl();
-    }
-    
-    /**
-     * Tests if this source code view has shown source code.
-     * @return <code>true</code> if source code has been shown, or <code>false</code> 
-     */
-    public boolean hasShown() {
-        return timelineControl != null;
     }
     
     /**
@@ -246,10 +241,18 @@ public class SourceCodeView implements ViewChangedListener {
             return;
         }
         
-        setFocalTime(idx, ops.get(idx).getTime());
+        goTo(idx, ops.get(idx).getTime());
+    }
+    
+    /**
+     * Goes to a specified operation.
+     * @param idx the sequence number of the operation
+     * @param time the focal time
+     */
+    private void goTo(int idx, long time) {
+        setFocalTime(idx, time);
         
-        System.out.println("IDX = " + idx);
-        
+        List<UnifiedOperation> ops = getFileInfo().getOperations();
         buttonControl.updateButtonStates(idx, ops);
         
         setFocus();
@@ -303,6 +306,6 @@ public class SourceCodeView implements ViewChangedListener {
      */
     public void restoreSourceCodeViewState(SourceCodeViewState state) {
         timelineControl.setScale(state.getScale());
-        setFocalTime(state.getCurrentOperationIndex(), state.getFocalTime());
+        goTo(state.getCurrentOperationIndex(), state.getFocalTime());
     }
 }

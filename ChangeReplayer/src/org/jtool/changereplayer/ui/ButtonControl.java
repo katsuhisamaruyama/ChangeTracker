@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -136,7 +136,7 @@ public class ButtonControl {
     }
     
     /**
-     * Updates the states of the buttons.
+     * Updates the states of the buttons.z
      * @param idx the sequence number of the operation
      * @param ops the collection of the operations
      */

@@ -198,13 +198,13 @@ public class HistoryView extends ViewPart implements RepositoryChangedListener, 
         if (fileInfo == null || finfo.getFilePath().compareTo(fileInfo.getFilePath()) != 0) {
             fileInfo = finfo;
             createTableItems(ops);
+            
+            operationTable.deselectAll();
+            operationTable.update();
+            
+            currentOperationIndex = 0;
+            operationTable.select(0);
         }
-        
-        operationTable.deselectAll();
-        operationTable.update();
-        
-        currentOperationIndex = 0;
-        operationTable.select(0);
     }
     
     /**
@@ -347,18 +347,10 @@ public class HistoryView extends ViewPart implements RepositoryChangedListener, 
     public void notify(ViewChangedEvent evt) {
         Object source = evt.getSource();
         
-        if (source instanceof PackageExplorerView) {
-            Object obj = evt.getObject();
-            if (obj instanceof FileInfo) {
-                setOperationTable((FileInfo)obj);
-            }
-        }
-        
         if (source instanceof SourceCodeView) {
             SourceCodeView sview = (SourceCodeView)source;
-            int idx = sview.getCurrentOperationIndex();
-            
-            goTo(idx);
+            setOperationTable(sview.getFileInfo());
+            goTo(sview.getCurrentOperationIndex());
         }
     }
     
@@ -403,12 +395,18 @@ public class HistoryView extends ViewPart implements RepositoryChangedListener, 
             return;
         }
         
+        System.out.println("T INDEX = " + idx);
+        
         currentOperationIndex = idx;
         operationTable.select(idx);
         
-        reveal(idx);
+        // reveal(idx);
         
-        operationTable.update();
+        //operationTable.update();
+        operationTable.setSelection(idx);
+        //operationTable.redraw();
+        
+        System.out.println("T2 INDEX = " + idx);
     }
     
     /**

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -44,11 +44,6 @@ public class ChangeHistoryEditor extends EditorPart {
      * The source code view currently active.
      */
     private SourceCodeView activeView = null;
-    
-    /**
-     * The parent widget of the source code view.
-     */
-    private Composite parent;
     
     /**
      * The information on the file of interest.
@@ -110,10 +105,10 @@ public class ChangeHistoryEditor extends EditorPart {
      */
     @Override
     public void createPartControl(Composite parent) {
-        this.parent = parent;
-        
         FillLayout layout = new FillLayout();
         parent.setLayout(layout);
+        
+        activeView.createControls(parent);
     }
     
     /**
@@ -159,25 +154,24 @@ public class ChangeHistoryEditor extends EditorPart {
             return;
         }
         
-        if (activeView.hasShown()) {
-            if (finfo.equals(activeView.getFileInfo())) {
+        if (activeView.getFileInfo() != null) {
+            if (finfo.getFilePath().compareTo(activeView.getFileInfo().getFilePath()) == 0) {
                 return;
             }
             
-            viewStates.put(activeView.getFileInfo().getKey(), activeView.createSourceCodeViewState());
-            
-            activeView.dispose();
+            SourceCodeViewState prevState = activeView.createSourceCodeViewState();
+            viewStates.put(activeView.getFileInfo().getKey(), prevState);
         }
         
-        activeView.show(parent, finfo);
+        activeView.setFileInfo(finfo);
+        activeView.setTimelineBar();
         setPartName("#" + finfo.getName());
-        parent.layout();
         
-        SourceCodeViewState state = viewStates.get(finfo.getKey());
-        if (state == null) {
-            state = new SourceCodeViewState(finfo.getOperation(0).getTime(), 0, 100);
+        SourceCodeViewState curState = viewStates.get(finfo.getKey());
+        if (curState == null) {
+            curState = new SourceCodeViewState(finfo.getOperation(0).getTime(), 0, 100);
         }
-        activeView.restoreSourceCodeViewState(state);
+        activeView.restoreSourceCodeViewState(curState);
         
         setFocus();
     }

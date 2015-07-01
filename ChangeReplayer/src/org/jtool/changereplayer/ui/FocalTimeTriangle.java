@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -17,25 +17,13 @@ import org.eclipse.swt.graphics.GC;
 public class FocalTimeTriangle {
     
     /**
-     * The time line bar displaying this focal time triangle mark.
-     */
-    private TimelineBar timeLineBar;
-    
-    /**
-     * Creates a focal time triangle mark.
-     * @param bar the time line bar for displaying this focal time triangle mark
-     */
-    public FocalTimeTriangle(TimelineBar bar) {
-        timeLineBar = bar;
-    }
-    
-    /**
      * Draws this focal time triangle mark.
      * @param gc the SWT drawing capabilities
      * @param device the drawable device
+     * @param timeLineBar the time line bar for displaying this focal time triangle mark
      * @param mx the value that indicates the move distance by scrolling
      */
-    public void draw(GC gc, Device device, int mx) {
+    public void draw(GC gc, Device device, TimelineBar timeLineBar, int mx) {
         int center = timeLineBar.time2point(timeLineBar.getFocalTime()) - mx;
         int left = center - 3;
         int right = center + 3;

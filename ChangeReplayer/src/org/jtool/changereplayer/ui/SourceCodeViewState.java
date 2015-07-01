@@ -6,11 +6,18 @@
 
 package org.jtool.changereplayer.ui;
 
+import org.jtool.changerepository.data.FileInfo;
+
 /**
  * Stores the state of the source code view.
  * @author Katsuhisa Maruyama
  */
 public class SourceCodeViewState {
+    
+    /**
+     * The information on the file of interest.
+     */
+    protected FileInfo fileInfo;
     
     /**
      * The time when the operation of interest was performed.

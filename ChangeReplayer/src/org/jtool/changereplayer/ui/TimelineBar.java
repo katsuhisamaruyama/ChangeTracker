@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -54,6 +54,14 @@ public class TimelineBar {
      */
     public TimelineBar(TimelineControl control) {
         timelineControl = control;
+    }
+    
+    /**
+     * Tests if this time line bar has shown source code.
+     * @return <code>true</code> if the time line bar has been shown, or <code>false</code> 
+     */
+    public boolean hasShown() {
+        return fileLiveRanges != null;
     }
     
     /**
@@ -169,7 +177,7 @@ public class TimelineBar {
      * @return the top position of the area
      */
     int getTop() {
-        return area.y;
+        return 0;
     }
     
     /**
@@ -177,7 +185,7 @@ public class TimelineBar {
      * @return the bottom position of the area
      */
     int getBottom() {
-        return area.y + area.height;
+        return TIMELINE_HEIGHT;
     }
     
     /**
@@ -193,7 +201,7 @@ public class TimelineBar {
      * @return the height of the area
      */
     int getHeight() {
-        return area.height;
+        return TIMELINE_HEIGHT;
     }
     
     /**

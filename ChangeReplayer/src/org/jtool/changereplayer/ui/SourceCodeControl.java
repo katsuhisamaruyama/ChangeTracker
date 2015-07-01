@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -29,6 +29,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -53,6 +54,11 @@ public class SourceCodeControl {
      * The configuration of this source code control.
      */
     protected JavaSourceViewerConfiguration sourceViewerConf;
+    
+    /**
+     * The information on the file of interest.
+     */
+    protected FileInfo fileInfo = null;
     
     /**
      * The sequence number of the operation replayed previously.
@@ -94,9 +100,9 @@ public class SourceCodeControl {
      * Creates a control for this source code control.
      * @param parent the parent control
      * @param top the top control
-     * @param MARGIN the margin between the controls
      */
-    public void createPartControl(Composite parent, Control top, final int MARGIN) {
+    public void createPartControl(Composite parent, Control top) {
+        final int MARGIN = 0;
         IDocument document = new Document();
         
         JavaTextTools tools = JavaPlugin.getDefault().getJavaTextTools();
@@ -147,25 +153,26 @@ public class SourceCodeControl {
      * Updates this source code control.
      */
     public void update() {
-        if (sourceViewer != null) {
-            FileInfo finfo = sourcecodeView.getFileInfo();
-            int idx = sourcecodeView.getCurrentOperationIndex();
-            
-            if (currentCode != null) {
-                currentCode = finfo.getCode(currentCode, prevCodeIndex, idx);
-            } else {
-                currentCode = finfo.getCode(idx);
-            }
-            prevCodeIndex = idx;
-            
-            if (currentCode == null) {
-                System.out.println("### Error occurred during the replay = " + (idx + 1));
-                return;
-            }
-            
-            setCode(currentCode);
-            decorateCode(currentCode);
+        FileInfo finfo = sourcecodeView.getFileInfo();
+        int idx = sourcecodeView.getCurrentOperationIndex();
+        if (fileInfo != null && fileInfo.equals(finfo)) {
+            currentCode = finfo.getCode(currentCode, prevCodeIndex, idx);
+        } else {
+            currentCode = finfo.getCode(idx);
         }
+        
+        fileInfo = finfo;
+        prevCodeIndex = idx;
+        
+        if (currentCode == null) {
+            System.out.println("### Error occurred during the replay = " + (idx + 1));
+            return;
+        }
+        
+        setCode(currentCode);
+        decorateCode(currentCode);
+        
+        sourceViewer.getTextWidget().setText(currentCode);
     }
     
     /**

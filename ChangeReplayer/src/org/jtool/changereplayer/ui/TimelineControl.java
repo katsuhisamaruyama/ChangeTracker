@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -46,11 +46,6 @@ public class TimelineControl {
      * The source code view that contains this time-line control.
      */
     protected SourceCodeView sourcecodeView;
-    
-    /**
-     * The collection of time periods during which the file is live.
-     */
-    protected List<FileLiveRange> fileLiveRanges;
     
     /**
      * The collection of highlights.
@@ -133,22 +128,14 @@ public class TimelineControl {
      */
     public TimelineControl(SourceCodeView view) {
        this.sourcecodeView = view;
-       
-       fileLiveRanges = collectFileLiveRanges(sourcecodeView.getFileInfo());
-       
-       highlights = collectHighlights(sourcecodeView.getFileInfo());
-       Highlight.sortByPriority(highlights);
     }
     
     /**
      * Creates a control for this time-line control.
      * @param parent the parent control
-     * @param MARGIN the margin between the controls
      */
-    public void createPartControl(Composite parent, final int MARGIN) { 
+    public void createPartControl(Composite parent) {
         timelineBar = new TimelineBar(this);
-        timelineBar.setFileLiveRange(fileLiveRanges);
-        timelineBar.setHighlights(highlights);
         
         canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED | SWT.H_SCROLL);
         
@@ -165,7 +152,7 @@ public class TimelineControl {
         scrollBar.setEnabled(true);
         moveX = 0;
         
-        focalTimeTriangle = new FocalTimeTriangle(timelineBar);
+        focalTimeTriangle = new FocalTimeTriangle();
         
         timeLinePaintListener = createTimeLinePaintListener();
         canvas.addPaintListener(timeLinePaintListener);
@@ -187,6 +174,19 @@ public class TimelineControl {
         
         timeLineSelectionListener = createTimeLineSelectionListener();
         scrollBar.addSelectionListener(timeLineSelectionListener);
+    }
+    
+    /**
+     * Sets the time line bar.
+     */
+    public void setTimelineBar() {
+        List<FileLiveRange> fileLiveRanges = collectFileLiveRanges(sourcecodeView.getFileInfo());
+        
+        highlights = collectHighlights(sourcecodeView.getFileInfo(), fileLiveRanges);
+        Highlight.sortByPriority(highlights);
+        
+        timelineBar.setFileLiveRange(fileLiveRanges);
+        timelineBar.setHighlights(highlights);
     }
     
     /**
@@ -357,8 +357,9 @@ public class TimelineControl {
     /**
      * Collects highlights related to a given file.
      * @param finfo the file information
+     * @param the collection of time periods during which the file is live
      */
-    protected List<Highlight> collectHighlights(FileInfo finfo) {
+    protected List<Highlight> collectHighlights(FileInfo finfo, List<FileLiveRange> fileLiveRanges) {
         List<Highlight> hs = new ArrayList<Highlight>();
         
         for (UnifiedOperation op : finfo.getOperations()) {
@@ -404,6 +405,10 @@ public class TimelineControl {
          */
         @Override
         public void paintControl(PaintEvent evt) {
+            if (!timelineBar.hasShown()) {
+                return;
+            }
+            
             GC gc = evt.gc;
             Display display = canvas.getDisplay();
             
@@ -411,7 +416,7 @@ public class TimelineControl {
             gc.fillRectangle(canvas.getBounds());
             
             timelineBar.draw(gc, display, moveX);
-            focalTimeTriangle.draw(gc, display, moveX);
+            focalTimeTriangle.draw(gc, display, timelineBar, moveX);
             
             scrollBar.setMaximum(timelineBar.getWidth() + 1);
             scrollBar.setThumb(Math.min (timelineBar.getWidth(), canvas.getBounds().width));
@@ -435,6 +440,10 @@ public class TimelineControl {
          */
         @Override
         public void mouseDoubleClick(MouseEvent evt) {
+            if (!timelineBar.hasShown()) {
+                return;
+            }
+            
             timelineBar.updateTimeRange();
             
             long time = point2time(evt.x, evt.y);
@@ -477,6 +486,10 @@ public class TimelineControl {
          */
         @Override
         public void mouseMove(MouseEvent evt) {
+            if (!timelineBar.hasShown()) {
+                return;
+            }
+            
             long time = point2time(evt.x, evt.y);
             if (time == -1) {
                 return;
@@ -531,6 +544,10 @@ public class TimelineControl {
          */
         @Override
         public void handleEvent(Event evt) {
+            if (!timelineBar.hasShown()) {
+                return;
+            }
+            
             if (sourcecodeView.getFileInfo() == null) {
                 return;
             }
@@ -577,6 +594,10 @@ public class TimelineControl {
          */
         @Override
         public void keyReleased(KeyEvent evt) {
+            if (!timelineBar.hasShown()) {
+                return;
+            }
+            
             if (evt.keyCode == SWT.ARROW_UP) {
                 sourcecodeView.goTo(sourcecodeView.getCurrentOperationIndex() - 1);
                 
@@ -611,6 +632,10 @@ public class TimelineControl {
          */
         @Override
         public void keyTraversed(TraverseEvent evt) {
+            if (!timelineBar.hasShown()) {
+                return;
+            }
+            
             if (evt.detail == SWT.TRAVERSE_ARROW_PREVIOUS || evt.detail == SWT.TRAVERSE_ARROW_NEXT) {
                 evt.detail = SWT.TRAVERSE_NONE;
                 evt.doit = true;
@@ -643,6 +668,10 @@ public class TimelineControl {
          */
         @Override
         public void widgetSelected(SelectionEvent evt) {
+            if (!timelineBar.hasShown()) {
+                return;
+            }
+            
             int twidth = timelineBar.getWidth();
             int cwidth = canvas.getBounds().width;
             if (twidth > cwidth) {

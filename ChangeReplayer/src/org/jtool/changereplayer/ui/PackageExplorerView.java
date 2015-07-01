@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -7,8 +7,6 @@
 package org.jtool.changereplayer.ui;
 
 import org.jtool.changereplayer.Activator;
-import org.jtool.changereplayer.event.ViewChangedEvent;
-import org.jtool.changereplayer.event.ViewEventSource;
 import org.jtool.changerecorder.util.Time;
 import org.jtool.changerepository.data.FileInfo;
 import org.jtool.changerepository.data.PackageInfo;
@@ -135,23 +133,12 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
                             editor = ChangeHistoryEditor.open();
                             if (editor != null) {
                                 editor.show(fileInfo);
-                                
-                                sendViewEvent(fileInfo);
                             }
                         }
                     }
                 }
             }
         });
-    }
-    
-    /**
-     * Sends the view changed event.
-     * @param finfo the file information
-     */
-    private void sendViewEvent(FileInfo finfo) {
-        ViewChangedEvent e = new ViewChangedEvent(this, finfo);
-        ViewEventSource.getInstance().fire(e);
     }
     
     /**
