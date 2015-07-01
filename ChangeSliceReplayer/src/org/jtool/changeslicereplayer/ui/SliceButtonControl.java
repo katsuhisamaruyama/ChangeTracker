@@ -13,7 +13,6 @@ import org.jtool.changerepository.operation.UnifiedOperation;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorSite;
-
 import java.util.List;
 
 /**

@@ -47,11 +47,10 @@ public class SliceSourceCodeControl extends SourceCodeControl {
      * Creates a control for this source code control.
      * @param parent the parent control
      * @param top the top control
-     * @param MARGIN the margin between the controls
      */
     @Override
-    public void createPartControl(Composite parent, Control top, final int MARGIN) {
-        super.createPartControl(parent, top, MARGIN);
+    public void createPartControl(Composite parent, Control top) {
+        super.createPartControl(parent, top);
         
         SliceContextMenu contextMenu = new SliceContextMenu(this);
         contextMenu.create();

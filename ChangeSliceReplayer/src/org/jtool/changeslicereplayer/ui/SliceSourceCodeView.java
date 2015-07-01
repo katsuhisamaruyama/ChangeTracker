@@ -58,10 +58,10 @@ public class SliceSourceCodeView extends SourceCodeView {
         composite.setLayout(layout);
         
         timelineControl = new SliceTimelineControl(this);
-        timelineControl.createPartControl(composite, 0);
+        timelineControl.createPartControl(composite);
         
         sourcecodeControl = new SliceSourceCodeControl(this);
-        sourcecodeControl.createPartControl(composite, timelineControl.getControl(), 0);
+        sourcecodeControl.createPartControl(composite, timelineControl.getControl());
         
         return composite;
     }

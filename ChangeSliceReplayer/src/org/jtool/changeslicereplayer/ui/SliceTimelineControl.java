@@ -7,6 +7,7 @@
 package org.jtool.changeslicereplayer.ui;
 
 import org.jtool.changeslicereplayer.slicer.Slice;
+import org.jtool.changereplayer.ui.FileLiveRange;
 import org.jtool.changereplayer.ui.Highlight;
 import org.jtool.changereplayer.ui.LineHighlight;
 import org.jtool.changereplayer.ui.RectHighlight;
@@ -52,9 +53,10 @@ public class SliceTimelineControl extends TimelineControl {
     /**
      * Collects highlights related to a given file.
      * @param finfo the file information
+     * @param the collection of time periods during which the file is live
      */
     @Override
-    protected List<Highlight> collectHighlights(FileInfo finfo) {
+    protected List<Highlight> collectHighlights(FileInfo finfo, List<FileLiveRange> fileLiveRanges) {
         List<Highlight> hs = new ArrayList<Highlight>();
         
         for (UnifiedOperation op : finfo.getOperations()) {
