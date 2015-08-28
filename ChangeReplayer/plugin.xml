@@ -34,4 +34,7 @@
             restorable="true">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.compare.contentViewers">
+   </extension>
 </plugin>

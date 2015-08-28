@@ -19,6 +19,9 @@ import org.jtool.changerepository.event.RepositoryEventSource;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -30,6 +33,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 import java.util.List;
 
@@ -66,10 +70,17 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
     private ChangeHistoryEditor editor;
     
     /**
+     * The checker thats checks if operations are replay-able.
+     */
+    private OperationChecker operationChecker;
+    
+    /**
      * Creates a package explorer.
      */
     public PackageExplorerView() {
         RepositoryEventSource.getInstance().addEventListener(this);
+        
+        operationChecker = new OperationChecker();
     }
     
     /**
@@ -83,6 +94,7 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
         viewer.setLabelProvider(new ProjectLabelProvider());
         
         registerDoubleClickAction();
+        registerContextMenuAction();
         
         viewer.setInput(getProjectNodes());
         viewer.refresh();
@@ -149,12 +161,13 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
         return editor;
     }
     
+    private boolean useInternalWorkspace = true;
+    
     /**
      * Makes actions on the tool bar.
      */
     private void makeToolBarActions() {
         Action workspaceAction = new Action("Workspace", IAction.AS_CHECK_BOX) {
-            private boolean useInternalWorkspace = true;
             
             public void run() {
                 if (useInternalWorkspace) {
@@ -167,23 +180,83 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
             }
         };
         workspaceAction.setToolTipText("Use internal/external workspace");
-        workspaceAction.setImageDescriptor(refreshIcon);
+        workspaceAction.setImageDescriptor(repositoryIcon);
         workspaceAction.setEnabled(true);
         workspaceAction.setChecked(true);
         
         Action readAction = new Action("Read") {
             public void run() {
-                System.out.println("READ");
-                
-                // RepositoryManager.collectOperations();
+                if (useInternalWorkspace) {
+                    System.out.println("REFRESH");
+                    RepositoryManager.getInstance().collectOperationsInDefaultPath();
+                } else {
+                    System.out.println("READ");
+                    // RepositoryManager.getInstance().collectOperationsInDefaultPath();
+                }
             }
         };
-        readAction.setToolTipText("Read change history");
-        readAction.setImageDescriptor(repositoryIcon);
+        readAction.setToolTipText("Refresh/Read change history");
+        readAction.setImageDescriptor(refreshIcon);
         
         IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
         manager.add(workspaceAction);
         manager.add(readAction);
+    }
+    
+    /**
+     * Registers an action when a file is right-clicked.
+     */
+    private void registerContextMenuAction() {
+        MenuManager menuManager = new MenuManager();
+        menuManager.setRemoveAllWhenShown(true);
+        menuManager.addMenuListener(new IMenuListener() {
+            
+            /**
+             * Notifies this listener that the menu is about to be shown by the given menu manager.
+             * @param manager the menu manager
+             */
+            public void menuAboutToShow(IMenuManager manager) {
+                if (viewer.getSelection() instanceof IStructuredSelection) {
+                    IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
+                    Object element = selection.getFirstElement();
+                    
+                    if (element instanceof TreeNode) {
+                        TreeNode node = (TreeNode)element;
+                        Object value = node.getValue();
+                        
+                        if (value instanceof FileInfo) {
+                            fillContextMenu(manager, (FileInfo)value);
+                        }
+                    }
+                }
+            }
+        });
+        
+        Menu menu = menuManager.createContextMenu(viewer.getControl());
+        viewer.getControl().setMenu(menu);
+        getSite().registerContextMenu(menuManager, viewer);
+    }
+    
+    /**
+     * Fills the menu items.
+     * @param manager the menu manager
+     * @param finfo the source file information
+     */
+    private void fillContextMenu(IMenuManager manager, final FileInfo finfo) {
+        manager.setRemoveAllWhenShown(true);
+        
+        Action action = new Action("Check Code...") {
+            
+            /**
+             * Performs the action.
+             */
+            public void run() {
+                operationChecker.open();
+                operationChecker.checkCode(finfo);
+            }
+        };
+        
+        manager.add(action);
     }
     
     /**

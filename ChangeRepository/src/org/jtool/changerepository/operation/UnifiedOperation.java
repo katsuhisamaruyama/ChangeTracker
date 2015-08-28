@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -14,6 +14,7 @@ import org.jtool.changerecorder.operation.MenuOperation;
 import org.jtool.changerecorder.operation.FileOperation;
 import org.jtool.changerecorder.operation.NormalOperation;
 import org.jtool.changerecorder.operation.ResourceOperation;
+import org.jtool.changerecorder.util.Time;
 import org.jtool.changerepository.data.FileInfo;
 import org.jtool.changerepository.data.PackageInfo;
 import org.jtool.changerepository.data.ProjectInfo;
@@ -433,6 +434,14 @@ public class UnifiedOperation {
      */
     public long getTime() {
         return operation.getTime();
+    }
+    
+    /**
+     * Returns the time when the operation was performed.
+     * @return the time string of the operation
+     */
+    public String getTimeString() {
+        return Time.toUsefulFormat(getTime());
     }
     
     /**
