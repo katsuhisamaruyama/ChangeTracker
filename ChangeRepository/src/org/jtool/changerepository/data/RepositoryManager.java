@@ -110,8 +110,6 @@ public class RepositoryManager {
     public void collectOperationsInDefaultPath() {
         String defaultDirPath = OperationHistory.getOperationHistoryDirPath().toString();
         internalWorkspaceInfo = registOperations(defaultDirPath);
-        
-        setInternalWorkspace();
     }
     
     /**
@@ -121,8 +119,6 @@ public class RepositoryManager {
     public void collectOperationsInRepository(String path) {
         externalWorkspaceInfo.clear();
         externalWorkspaceInfo = registOperations(path);
-        
-        setExternalWorkspace();
     }
     
     /**
@@ -140,7 +136,7 @@ public class RepositoryManager {
             return null;
         }
         
-        WorkspaceInfo workspaceInfo = collectOperations(path, files);
+        workspaceInfo = collectOperations(path, files);
         
         if (workspaceInfo != null) {
             RepositoryChangedEvent evt = new RepositoryChangedEvent(this);
