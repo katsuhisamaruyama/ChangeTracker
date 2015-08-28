@@ -52,6 +52,8 @@ public class SliceSourceCodeControl extends SourceCodeControl {
     public void createPartControl(Composite parent, Control top) {
         super.createPartControl(parent, top);
         
+        System.out.println("AA");
+        
         SliceContextMenu contextMenu = new SliceContextMenu(this);
         contextMenu.create();
     }

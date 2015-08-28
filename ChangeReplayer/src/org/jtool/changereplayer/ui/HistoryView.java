@@ -395,18 +395,9 @@ public class HistoryView extends ViewPart implements RepositoryChangedListener, 
             return;
         }
         
-        System.out.println("T INDEX = " + idx);
-        
         currentOperationIndex = idx;
         operationTable.select(idx);
-        
-        // reveal(idx);
-        
-        //operationTable.update();
-        operationTable.setSelection(idx);
-        //operationTable.redraw();
-        
-        System.out.println("T2 INDEX = " + idx);
+        reveal(idx);
     }
     
     /**
