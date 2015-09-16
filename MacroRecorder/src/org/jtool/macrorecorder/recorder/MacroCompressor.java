@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -12,7 +12,7 @@ import org.jtool.macrorecorder.macro.DocumentMacro;
  * Compresses macros.
  * @author Katsuhisa Maruyama
  */
-public class MacroCompressor {
+public class MacroCompressor implements IMacroCompressor {
     
     /**
      * Creates an object compressing macros.
@@ -77,7 +77,7 @@ public class MacroCompressor {
      * @param next the latter document macro that represents the insertion
      * @return the combined macro, or <code>null</code> if the macros cannot be combined
      */
-    private DocumentMacro combineInsertMacro(DocumentMacro last, DocumentMacro next) {
+    protected DocumentMacro combineInsertMacro(DocumentMacro last, DocumentMacro next) {
         if (last == null) {
             return next;
         }
@@ -101,7 +101,7 @@ public class MacroCompressor {
      * @param next the latter document macro that represents deletion
      * @return the combined macro, or <code>null</code> if the macros cannot be combined
      */
-    private DocumentMacro combineDeleteMacro(DocumentMacro last, DocumentMacro next) {
+    protected DocumentMacro combineDeleteMacro(DocumentMacro last, DocumentMacro next) {
         if (last == null) {
             return next;
         }
@@ -136,7 +136,7 @@ public class MacroCompressor {
      * @param next the latter document macro that represents replacement
      * @return the combined macro, or <code>null</code> if the macros cannot be combined
      */
-    private DocumentMacro compressReplaceMacro(DocumentMacro last, DocumentMacro next) {
+    protected DocumentMacro compressReplaceMacro(DocumentMacro last, DocumentMacro next) {
         if (last == null) {
             return next;
         }
@@ -162,7 +162,7 @@ public class MacroCompressor {
      * @param text the text to be combined
      * @return <code>true</code> if the can be combined, otherwise <code>false</code>
      */
-    public boolean combineWith(String text) {
+    protected boolean combineWith(String text) {
         char[] DELIMITER_CHARS = new char[] { '\n', '\r', ';', '{', '}' };
         
         for (int i = 0; i < DELIMITER_CHARS.length; i++) {

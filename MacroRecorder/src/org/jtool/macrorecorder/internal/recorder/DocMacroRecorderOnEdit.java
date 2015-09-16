@@ -1,12 +1,12 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
 
 package org.jtool.macrorecorder.internal.recorder;
 
-import org.jtool.macrorecorder.recorder.MacroCompressor;
+import org.jtool.macrorecorder.recorder.IMacroCompressor;
 import org.jtool.macrorecorder.recorder.Recorder;
 import org.jtool.macrorecorder.util.EditorUtilities;
 import org.jtool.macrorecorder.macro.DocumentMacro;
@@ -37,7 +37,7 @@ public class DocMacroRecorderOnEdit extends DocMacroRecorder {
     /**
      * A compressor that compresses macros.
      */
-    private MacroCompressor compressor;
+    private IMacroCompressor compressor;
     
     /**
      * The styled text of an editor.
@@ -50,7 +50,7 @@ public class DocMacroRecorderOnEdit extends DocMacroRecorder {
      * @param recorder a recorder that sends macro events
      * @param compressor a compressor that compresses macros
      */
-    public DocMacroRecorderOnEdit(IEditorPart editor, Recorder recorder, MacroCompressor compressor) {
+    public DocMacroRecorderOnEdit(IEditorPart editor, Recorder recorder, IMacroCompressor compressor) {
         super(EditorUtilities.getInputFilePath(editor), recorder);
         
         this.editor = editor;

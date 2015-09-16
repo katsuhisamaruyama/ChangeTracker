@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014
+ *  Copyright 2015
  *  Software Science and Technology Lab.
  *  Department of Computer Science, Ritsumeikan University
  */
@@ -53,7 +53,7 @@ public class Recorder {
     /**
      * A compressor that compresses macros.
      */
-    private MacroCompressor compressor;
+    private IMacroCompressor compressor;
     
     /**
      * The collection of listeners that receives macro events.
@@ -79,7 +79,7 @@ public class Recorder {
      * Sets a compressor that compresses macros.
      * @param compressor the compressor
      */
-    public void setMacroCompressor(MacroCompressor compressor) {
+    public void setMacroCompressor(IMacroCompressor compressor) {
         if (compressor != null) {
             this.compressor = compressor;
         }
@@ -110,7 +110,6 @@ public class Recorder {
             public void run() {
                 try {
                     IWorkbenchWindow window = Activator.getWorkbenchWindow();
-                    // window.run(true, true, new IRunnableWithProgress() {
                     ProgressMonitorDialog dialog = new ProgressMonitorDialog(window.getShell());
                     dialog.run(true, true, new IRunnableWithProgress() {
                         
@@ -140,7 +139,6 @@ public class Recorder {
                                 
                                 num++;
                                 monitor.worked(1);
-                                // Thread.sleep(1000); // for testing
                             }
                             
                             monitor.done();
