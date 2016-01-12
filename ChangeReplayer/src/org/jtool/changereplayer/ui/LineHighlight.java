@@ -13,6 +13,7 @@ import org.eclipse.swt.graphics.GC;
 
 /**
  * A highlight that draws a line.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class LineHighlight extends Highlight {

@@ -8,6 +8,8 @@ package org.jtool.changereplayer.ui;
 
 import org.jtool.changereplayer.Activator;
 import org.jtool.changerepository.data.FileInfo;
+import org.jtool.changerepository.event.RepositoryChangedEvent;
+import org.jtool.changerepository.event.RepositoryChangedListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FillLayout;
@@ -26,9 +28,8 @@ import java.util.Map;
 /**
  * Manages an editor displaying source code to be replayed.
  * @author Katsuhisa Maruyama
- *
  */
-public class ChangeHistoryEditor extends EditorPart {
+public class ChangeHistoryEditor extends EditorPart implements RepositoryChangedListener {
     
     /**
      * The identification string that is used to register the editor.
@@ -135,6 +136,15 @@ public class ChangeHistoryEditor extends EditorPart {
         viewStates.clear();
         
         super.dispose();
+    }
+    
+    /**
+     * Receives a repository changed event.
+     * @param evt the sent and received event
+     */
+    @Override
+    public void notify(RepositoryChangedEvent evt) {
+        dispose();
     }
     
     /**

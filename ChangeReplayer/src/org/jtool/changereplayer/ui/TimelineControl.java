@@ -38,6 +38,7 @@ import java.util.ArrayList;
 
 /**
  * Creates a time-line control for replay.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class TimelineControl {

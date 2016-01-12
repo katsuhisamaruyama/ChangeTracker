@@ -8,7 +8,7 @@ package org.jtool.changerecorder.editor;
 
 import org.jtool.changerecorder.operation.FileOperation;
 import org.jtool.changerecorder.operation.IOperation;
-import org.jtool.macrorecorder.util.EditorUtilities;
+import org.jtool.editrecorder.util.EditorUtilities;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,6 +20,8 @@ import org.eclipse.ui.PartInitException;
 
 /**
  * Provides a Java-specific text editor on which editing operations are recorded.
+ * @author Takayuki Omori
+ * @author Katsuhisa Maruyama
  */
 @SuppressWarnings("restriction")
 public class JCompilationUnitEditor extends CompilationUnitEditor {

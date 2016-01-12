@@ -9,6 +9,7 @@ package org.jtool.changerecorder.history;
 /**
  * The elements, attributes, and values of the attributes appearing in XML documents
  * that store information on the operation history.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public interface XmlConstantStrings {

@@ -22,6 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Converts the operation history into the XML representation.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class Operation2Xml {

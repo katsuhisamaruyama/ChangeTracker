@@ -11,6 +11,7 @@ import org.jtool.changerecorder.util.Time;
 
 /**
  * Stores information on a menu operation.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class MenuOperation extends AbstractOperation {

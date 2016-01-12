@@ -12,6 +12,7 @@ import org.eclipse.swt.graphics.GC;
 
 /**
  * Defines a triangle representing the specified time.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class FocalTimeTriangle {

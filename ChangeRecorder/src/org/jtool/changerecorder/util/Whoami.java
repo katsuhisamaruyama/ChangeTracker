@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 
 /**
  * Obtains the name of a user editing source code.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class Whoami {

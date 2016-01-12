@@ -9,7 +9,6 @@ package org.jtool.changereplayer.ui;
 import org.jtool.changereplayer.event.ViewChangedListener;
 import org.jtool.changereplayer.event.ViewChangedEvent;
 import org.jtool.changereplayer.event.ViewEventSource;
-import org.jtool.changereplayer.event.SourceCodeChangedEvent;
 import org.jtool.changerepository.event.RepositoryChangedEvent;
 import org.jtool.changerepository.event.RepositoryChangedListener;
 import org.jtool.changerepository.event.RepositoryEventSource;
@@ -27,7 +26,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;

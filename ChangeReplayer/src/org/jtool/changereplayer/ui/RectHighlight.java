@@ -15,6 +15,7 @@ import org.eclipse.swt.graphics.Rectangle;
 
 /**
  * A drawer that draws a rectangle highlight.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class RectHighlight extends Highlight {

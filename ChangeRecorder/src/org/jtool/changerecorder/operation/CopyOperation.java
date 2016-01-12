@@ -11,6 +11,7 @@ import org.jtool.changerecorder.util.Time;
 
 /**
  * Stores information on a copy operation.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class CopyOperation extends AbstractOperation {

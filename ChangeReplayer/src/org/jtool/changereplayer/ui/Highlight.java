@@ -14,6 +14,7 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Manages information on any highlight.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class Highlight {

@@ -12,6 +12,7 @@ import java.io.IOException;
 
 /**
  * Manages the file stream.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class FileStream {

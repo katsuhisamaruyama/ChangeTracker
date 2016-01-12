@@ -10,6 +10,7 @@ import java.util.Calendar;
 
 /**
  * Manages and formats time information.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class Time {

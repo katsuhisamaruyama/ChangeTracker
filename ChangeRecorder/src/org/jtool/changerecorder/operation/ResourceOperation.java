@@ -11,6 +11,7 @@ import org.jtool.changerecorder.util.Time;
 
 /**
  * Stores information on an operation related to the resource (project and package) changes.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class ResourceOperation extends AbstractOperation {

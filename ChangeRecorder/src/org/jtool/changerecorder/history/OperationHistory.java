@@ -19,6 +19,7 @@ import java.util.Comparator;
 
 /**
  * Stores information on operation history.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class OperationHistory {

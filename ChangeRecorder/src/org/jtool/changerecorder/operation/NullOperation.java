@@ -9,6 +9,7 @@ package org.jtool.changerecorder.operation;
 /**
  * Stores information on a null operation.
  * This operation does not usually appear.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class NullOperation extends AbstractOperation {

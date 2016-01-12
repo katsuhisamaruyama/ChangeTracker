@@ -4,6 +4,6 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/MacroRecorder"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/EditRecorder"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

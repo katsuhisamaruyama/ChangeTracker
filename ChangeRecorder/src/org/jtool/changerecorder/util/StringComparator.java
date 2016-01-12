@@ -8,6 +8,7 @@ package org.jtool.changerecorder.util;
 
 /**
  * Compares two strings.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class StringComparator {

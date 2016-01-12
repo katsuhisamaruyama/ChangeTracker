@@ -11,6 +11,7 @@ import org.jtool.changerecorder.util.Time;
 
 /**
  * Stores information on a file operation.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class FileOperation extends AbstractOperation {

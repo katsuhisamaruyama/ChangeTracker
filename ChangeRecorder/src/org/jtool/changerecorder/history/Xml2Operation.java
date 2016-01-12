@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 /**
  * Converts the XML representation into the operation history.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class Xml2Operation {

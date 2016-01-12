@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Manages a time-line bar.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class TimelineBar {

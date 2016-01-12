@@ -10,6 +10,7 @@ import org.jtool.changerecorder.util.StringComparator;
 
 /**
  * Stores information on a text operation.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public abstract class TextOperation extends AbstractOperation {

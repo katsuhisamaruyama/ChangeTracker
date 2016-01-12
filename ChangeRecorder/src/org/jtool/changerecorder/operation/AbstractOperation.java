@@ -11,6 +11,7 @@ import org.jtool.changerecorder.util.Whoami;
 
 /**
  * Defines the abstract class used for accessing information on the all kinds of operations.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public abstract class AbstractOperation implements IOperation {

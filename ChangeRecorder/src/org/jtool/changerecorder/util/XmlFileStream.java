@@ -26,6 +26,7 @@ import java.nio.charset.Charset;
 
 /**
  * Manages the XML file stream.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class XmlFileStream {

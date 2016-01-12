@@ -70,6 +70,11 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
     private ChangeHistoryEditor editor;
     
     /**
+     * A flag that indicates if this view displays a repository in the internal workspace.
+     */
+    private boolean useInternalWorkspace = true;
+    
+    /**
      * The checker thats checks if operations are replay-able.
      */
     private OperationChecker operationChecker;
@@ -160,8 +165,6 @@ public class PackageExplorerView extends ViewPart implements RepositoryChangedLi
     public ChangeHistoryEditor getEditor() {
         return editor;
     }
-    
-    private boolean useInternalWorkspace = true;
     
     /**
      * Makes actions on the tool bar.

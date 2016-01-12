@@ -35,6 +35,7 @@ import java.util.ArrayList;
 
 /**
  * Creates a source code control for replay.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 @SuppressWarnings("restriction")
@@ -169,7 +170,7 @@ public class SourceCodeControl {
             return;
         }
         
-        setCode(currentCode);
+        setText(currentCode);
         decorateCode(currentCode);
         
         sourceViewer.getTextWidget().setText(currentCode);
@@ -190,6 +191,14 @@ public class SourceCodeControl {
     }
     
     /**
+     * Returns the contents of the current source code.
+     * @return the contents of the current source code
+     */
+    protected String getCurrentCode() {
+        return currentCode;
+    }
+    
+    /**
      * Returns the SWT widget that represents the styled text for the source control.
      * @return the styled text widget
      */
@@ -201,7 +210,7 @@ public class SourceCodeControl {
      * Returns the content of the source code displayed on this source code control.
      * @return the content of the source code
      */
-    protected String getCode() {
+    protected String getText() {
         return sourceViewer.getTextWidget().getText();
     }
     
@@ -209,7 +218,7 @@ public class SourceCodeControl {
      * Sets the content of the source code displayed on this source code control.
      * @param code the content of the source code
      */
-    protected void setCode(String code) {
+    protected void setText(String code) {
         sourceViewer.getTextWidget().setText(code);
     }
     

@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * Creates a source code viewer for replay.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class SourceCodeView implements ViewChangedListener {
@@ -166,6 +167,49 @@ public class SourceCodeView implements ViewChangedListener {
      */
     public TextSelection getSelection() {
         return sourcecodeControl.getSelection();
+    }
+    
+    /**
+     * Returns the contents of the current source code.
+     * @return the contents of the current source code
+     */
+    public String getCurrentCode() {
+        return sourcecodeControl.getCurrentCode();
+    }
+    
+    /**
+     * Returns the contents of the source code corresponding to the previous operation.
+     * @return the contents of the previous source code
+     */
+    public String getPreviousCode() {
+        if (currentOperationIndex > 0) {
+            return getCode(currentOperationIndex - 1);
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the contents of the source code corresponding to the next operation.
+     * @return the contents of the next source code
+     */
+    public String getNextCode() {
+        if (currentOperationIndex < fileInfo.getOperations().size() - 1) {
+            return getCode(currentOperationIndex + 1);
+        }
+        return null;
+    }
+    
+    /**
+     * Obtains the contents of the source code corresponding to a specified operation.
+     * @param idx the sequence number of the operation of interest
+     */
+    private String getCode(int idx) {
+        String code = getCurrentCode();
+        if (code != null) {
+            return fileInfo.getCode(code, currentOperationIndex, idx);
+        } else {
+            return fileInfo.getCode(idx);
+        }
     }
     
     /**

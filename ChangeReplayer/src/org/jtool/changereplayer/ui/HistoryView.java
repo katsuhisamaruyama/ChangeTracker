@@ -39,6 +39,7 @@ import java.util.List;
 
 /**
  * Creates a view that displays the history of operations.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class HistoryView extends ViewPart implements RepositoryChangedListener, ViewChangedListener {

@@ -12,6 +12,7 @@ import org.jtool.changerecorder.operation.NormalOperation;
 
 /**
  * Applies an operation into code.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class CodeRestorer {

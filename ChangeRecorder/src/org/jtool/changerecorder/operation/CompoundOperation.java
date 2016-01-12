@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 /**
  * Stores information on a compound operation enclosing multiple operations.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public class CompoundOperation extends AbstractOperation {

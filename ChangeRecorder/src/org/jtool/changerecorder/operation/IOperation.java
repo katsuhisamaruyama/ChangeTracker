@@ -8,6 +8,7 @@ package org.jtool.changerecorder.operation;
 
 /**
  * Defines the interface used for accessing information on the all kinds of operations.
+ * @author Takayuki Omori
  * @author Katsuhisa Maruyama
  */
 public interface IOperation {
